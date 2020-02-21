@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background">
+
+        <TextView
+            android:id="@+id/my_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="30dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:text="@string/my_tasks"
+            android:textColor="@color/white"
+            android:textSize="@dimen/textsize"
+            android:textStyle="bold" />
+
+
+        <LinearLayout
+            android:id="@+id/lsub_task"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="90dp"
+            android:background="@drawable/task_border"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:fontFamily="@style/FontOpenSans"
+            android:orientation="vertical">
+
+
+
+            <EditText
+                android:id="@+id/show_sub_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@style/FontOpenSans"
+                android:hint="@string/sub_tasks"
+                android:padding="@dimen/padding_textbox"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/sub_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:drawableStart="@drawable/ic_add_details"
+                android:drawablePadding="15dp"
+                android:fontFamily="@style/FontOpenSans"
+                android:hint="@string/add_details"
+                android:padding="@dimen/padding_textbox"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <EditText
+                android:id="@+id/sub_date_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:drawableStart="@drawable/ic_date_time"
+                android:drawablePadding="15dp"
+                android:fontFamily="@style/FontOpenSans"
+                android:hint="@string/add_Date_time"
+                android:padding="@dimen/padding_textbox"
+                android:inputType=""
+                android:editable="false"
+                android:textColor="@color/black"
+                android:importantForAutofill="no"
+                android:textSize="16sp"
+                android:focusable="false"
+                tools:ignore="TextFields" />
+
+            <EditText
+                android:id="@+id/sub_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="25dp"
+                android:drawableStart="@drawable/ic_add_image"
+                android:drawablePadding="15dp"
+                android:fontFamily="@style/FontOpenSans"
+                android:hint="@string/add_image"
+                android:padding="@dimen/padding_textbox"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/btnsubadd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="130dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="130dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/button_done"
+                android:text="@string/done"
+                android:textColor="@color/orange" />
+        </LinearLayout>
+
+
+      <!--  <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="@null"
+            app:fabSize="normal"
+            app:layout_anchor="@+id/lsub_task"
+            app:layout_anchorGravity="bottom|center" />-->
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>

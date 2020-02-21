@@ -1,0 +1,55 @@
+<resources>
+    <string name="app_name">To_Do</string>
+    <string name="sing_up">Sign up</string>
+    <string name="enter_email"> Enter E-Mail</string>
+    <string name="login">Login</string>
+    <string name="email">E-Mail</string>
+    <string name="password">Password</string>
+    <string name="cnfm_password">Confirm Password</string>
+    <string name="enter_password"> Enter Password</string>
+    <string name="enter_cnfm_password">Enter Confirm Password</string>
+    <string name="my_tasks">My Tasks</string>
+    <string name="already_account"> already have an account? SIGN IN</string>
+    <string name="not_account">don\'t have an account? SIGN UP </string>
+    <string name="success_login">Successful Login</string>
+    <string name="enter_correct_password">Password is Wrong</string>
+    <string name="email_not_registered">Email Is Not Registered</string>
+    <string name="email_existing">Email Address is Existing</string>
+    <string name="register_success">User Successfully Registered</string>
+    <string name="please_try_Again">Please Try Again</string>
+    <string name="valid_email">Please Enter Valid Email Address</string>
+    <string name="proper_email">Please Enter E-Mail in Proper Format</string>
+    <string name="enter_name_hint">Enter Your Name</string>
+    <string name="enter_email_hint">Enter Your Email</string>
+    <string name="enter_password_hint">Enter Your password</string>
+    <string name="enter_email_password">Enter Email and Password</string>
+    <string name="enter_field">Please Enter Fields</string>
+    <string name="password_range">Enter Password Between 8 to 16 Character</string>
+    <string name="logout">LogOut</string>
+    <string name="main_task">Main Task</string>
+    <string name="add_details">Add Details</string>
+    <string name="add_Date_time">Add Date and Time</string>
+    <string name="add_image">Add image</string>
+    <string name="sub_tasks">Sub Tasks</string>
+    <string name="done">Done</string>
+    <string name="email_pattern">^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$</string>
+    <string name="title_activity_basic">BasicActivity</string>
+    <string name="new_note">Add Note</string>
+    <string name="hint_title">Enter_Title</string>
+    <string name="hint_desc">Enter_Description</string>
+    <string name="hint_time">Enter_Time</string>
+    <string name="hint_date">Enter Date</string>
+    <string name="task_Add">Add Task</string>
+    <string name="task_Added">Task Added Successfully</string>
+    <string name="task_not_Add">Task Not Added Successfully</string>
+    <string name="no_note">No notes</string>
+    <string name="note">Update Note</string>
+    <string name="update">Update</string>
+    <string name="updated">Updated</string>
+    <string name="cancel">Cancel</string>
+    <string name="passwordnotmatch">Password Does Not Match</string>
+    <string name="add_subtasks">Add Subtasks</string>
+
+
+</resources>
+

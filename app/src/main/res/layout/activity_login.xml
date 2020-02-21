@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background">
+
+
+    <TextView
+        android:id="@+id/login"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="30dp"
+        android:text="@string/login"
+        android:textColor="@color/white"
+        android:textSize="34sp"
+        android:fontFamily="@style/FontOpenSans"
+        android:textStyle="bold" />
+
+
+    <LinearLayout
+        android:id="@+id/lin_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="140dp"
+        android:layout_marginRight="20dp"
+        android:fontFamily="@style/FontOpenSans"
+        android:background="@drawable/login_border"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/txlEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:text="@string/email"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+             />
+
+        <EditText
+            android:id="@+id/ledemail"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="25dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:background="@drawable/edittext_border"
+            android:drawableEnd="@drawable/ic_email"
+            android:hint="@string/enter_email"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:padding="10dp" />
+
+        <TextView
+            android:id="@+id/ltxpasword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/edemail"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="25dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:text="@string/password"
+            android:textColor="@color/black"
+            android:textSize="16sp"/>
+
+        <EditText
+            android:id="@+id/lpassword"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="25dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:background="@drawable/edittext_border"
+            android:drawableEnd="@drawable/ic_key"
+            android:hint="@string/enter_password"
+            android:inputType="textPassword"
+            android:padding="10dp" />
+
+        <Button
+            android:id="@+id/btnLogin"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="30dp"
+            android:fontFamily="@style/FontOpenSans"
+            android:text="@string/login"
+            android:textStyle="bold"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/not_account"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lin_login"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="20dp"
+        android:fontFamily="@style/FontOpenSans"
+        android:text="@string/not_account"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</RelativeLayout>
