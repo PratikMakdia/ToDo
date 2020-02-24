@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,16 +32,15 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TaskListAdapter.OnDeleteClickListener {
 
 
+    public static final int UPDATE_NOTE_ACTIVITY_REQUEST_CODE = 2;
     private static final int NEW_ACTIVITY_REQUEST_CODE = 1;
-
-
     FirebaseAuth firebaseAuth;
 
     TextView txnote, txmytasks;
     RecyclerView recyclerView;
+    Button btnupdate;
 
-
-   // private String TAG = this.getClass().getSimpleName();
+    // private String TAG = this.getClass().getSimpleName();
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN | ItemTouchHelper.START | ItemTouchHelper.END, 0) {
@@ -90,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initVariables();
         userornot();
 
+
         setOnClickListener();
     }
 
@@ -100,14 +101,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void initVariables() {
 
         firebaseAuth = FirebaseAuth.getInstance();
-
         txnote = findViewById(R.id.txvNote);
         txmytasks = findViewById(R.id.my_tasks);
-
         imglogout = findViewById(R.id.iglogout);
         fab = findViewById(R.id.floataddmain);
-
+        btnupdate=findViewById(R.id.btnmainupdate);
         recyclerView = findViewById(R.id.recyclerview);
+
+
         taskListAdapter = new TaskListAdapter(this, this);
         recyclerView.setAdapter(taskListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -189,10 +190,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
     /**
      * for Navigate to Main Task Screen
      */
     private void navigateToAddMainTask() {
+
+
         Intent i = new Intent(MainActivity.this, Add_Main_Task.class);
         startActivityForResult(i, NEW_ACTIVITY_REQUEST_CODE)
         ;
@@ -209,8 +213,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * from user back pressed
      */
     public void onBackPressed() {
+        exitDialog();
 
-        finish();
     }
 
 
@@ -238,6 +242,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         alertDialog.show();
     }
+
+    private void exitDialog() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
+        alertDialog.setTitle("Confirm Exit ???");
+        alertDialog.setMessage("Are you sure you want to Exit ?");
+        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+                finish();
+
+
+            }
+        });
+
+        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+
 }
 
 

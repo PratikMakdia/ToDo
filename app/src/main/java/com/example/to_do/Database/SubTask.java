@@ -2,15 +2,14 @@ package com.example.to_do.Database;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "subtask",
+@Entity(tableName = "subtask")/*,
         foreignKeys = @ForeignKey(entity = Task.class,
                 parentColumns = "id",
                 childColumns = "maintaskid",
-                onDelete = ForeignKey.CASCADE))
+                onDelete = ForeignKey.CASCADE))*/
 public class SubTask {
 
     @PrimaryKey(autoGenerate = true)

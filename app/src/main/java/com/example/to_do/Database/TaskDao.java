@@ -36,4 +36,8 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks ORDER BY word_order ASC")
     LiveData<List<Task>> sortByOrder();
 
+    @Update
+    void updateName(Task task);
+
+
 }

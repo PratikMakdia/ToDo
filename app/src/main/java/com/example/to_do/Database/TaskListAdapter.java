@@ -1,9 +1,12 @@
 package com.example.to_do.Database;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.to_do.Add_Main_Task;
+import com.example.to_do.MainActivity;
 import com.example.to_do.R;
 
 import java.util.Collection;
@@ -76,60 +81,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         mtaskes = tasks;
         notifyDataSetChanged();
     }
-
-
-
-    public interface OnDeleteClickListener
-    {
-        void OnDeleteClickListener(Task myTask);
-    }
-
-    public class TaskViewHolder extends RecyclerView.ViewHolder {
-
-
-        private TextView TaskItemView;
-        private ImageView imgDelete, imgEdit;
-        private int mPosition;
-
-        public TaskViewHolder(View itemView) {
-            super(itemView);
-
-            TaskItemView = itemView.findViewById(R.id.txvNote);
-            imgDelete = itemView.findViewById(R.id.ivRowDelete);
-            imgEdit = itemView.findViewById(R.id.ivRowEdit);
-
-        }
-
-        public void setData(String note, int position) {
-            TaskItemView.setText(note);
-            mPosition = position;
-        }
-
-        public void setListners() {
-            /*imgEdit.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mcontext, EditActivity.class);
-                    intent.putExtra("note_id", mtaskes.get(mPosition).getId());
-                    ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
-
-                }
-            });
-
-*/
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onDeleteClickListener != null) {
-                        onDeleteClickListener.OnDeleteClickListener(mtaskes.get(mPosition));
-                    }
-                }
-            });
-        }
-    }
-
-
-
 
     @Override
     public int size() {
@@ -250,6 +201,60 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     @Override
     public List<Object> subList(int fromIndex, int toIndex) {
         return null;
+    }
+
+    public interface OnDeleteClickListener {
+        void OnDeleteClickListener(Task myTask);
+    }
+
+    public class TaskViewHolder extends RecyclerView.ViewHolder {
+
+
+        private TextView TaskItemView;
+        private ImageView imgDelete, imgEdit;
+        private int mPosition;
+        private Button btnupdate, btnadd;
+
+        public TaskViewHolder(View itemView) {
+            super(itemView);
+
+            TaskItemView = itemView.findViewById(R.id.txvNote);
+            imgDelete = itemView.findViewById(R.id.ivRowDelete);
+            imgEdit = itemView.findViewById(R.id.ivRowEdit);
+            btnadd = itemView.findViewById(R.id.btnmainadd);
+            btnupdate = itemView.findViewById(R.id.btnmainupdate);
+
+        }
+
+        public void setData(String note, int position) {
+            TaskItemView.setText(note);
+
+            mPosition = position;
+        }
+
+        public void setListners() {
+            imgEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                    Intent intent = new Intent(mcontext, Add_Main_Task.class);
+                    intent.putExtra("note_id", mtaskes.get(mPosition).getId());
+                    ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
+
+                }
+            });
+
+
+            imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onDeleteClickListener != null) {
+                        onDeleteClickListener.OnDeleteClickListener(mtaskes.get(mPosition));
+                    }
+                }
+            });
+        }
     }
 
 }

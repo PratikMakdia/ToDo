@@ -25,10 +25,12 @@ import java.util.Objects;
 
 public class AddSubTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    private SubTaskViewMOdel subTaskViewMOdel;
+    public EditText edsubtitle, edsubdesc, edsubdatettime;
     Button btnsubadd;
-    public  EditText edsubtitle,edsubdesc,edsubdatettime;
+    private SubTaskViewMOdel subTaskViewMOdel;
     private int noteId;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,12 +45,13 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
 
+
     private void initialize() {
-        subTaskViewMOdel=new SubTaskViewMOdel((Application) getApplicationContext());
-        edsubtitle=findViewById(R.id.show_sub_title);
-        edsubdesc=findViewById(R.id.sub_details);
-        edsubdatettime=findViewById(R.id.sub_date_time);
-        btnsubadd= findViewById(R.id.btnsubadd);
+        subTaskViewMOdel = new SubTaskViewMOdel((Application) getApplicationContext());
+        edsubtitle = findViewById(R.id.show_sub_title);
+        edsubdesc = findViewById(R.id.sub_details);
+        edsubdatettime = findViewById(R.id.sub_date_time);
+        btnsubadd = findViewById(R.id.btnsubadd);
      /*   Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             noteId = bundle.getInt("note_id");
@@ -82,57 +85,56 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
     private void addSubData() {
-            Intent resultintent = new Intent();
-            if (TextUtils.isEmpty(edsubtitle.getText()) || TextUtils.isEmpty(edsubdesc.getText()) || TextUtils.isEmpty(edsubdatettime.getText())) {
-                setResult(RESULT_CANCELED, resultintent);
-            } else {
+        Intent resultintent = new Intent();
+        if (TextUtils.isEmpty(edsubtitle.getText()) || TextUtils.isEmpty(edsubdesc.getText()) || TextUtils.isEmpty(edsubdatettime.getText())) {
+            setResult(RESULT_CANCELED, resultintent);
+        } else {
 
-                SubTask subTask;
+            SubTask subTask;
 
-                String mnote = edsubtitle.getText().toString();
-                String mdesc = edsubdesc.getText().toString();
-                String mtime = edsubdatettime.getText().toString();
-                setResult(RESULT_OK, resultintent);
+            String mnote = edsubtitle.getText().toString();
+            String mdesc = edsubdesc.getText().toString();
+            String mtime = edsubdatettime.getText().toString();
 
-                if(TextUtils.isEmpty(mdesc)&& TextUtils.isEmpty(mtime))
-                {
-                    subTask = new SubTask(mnote);
-                    subTaskViewMOdel.insert(subTask);
-                }
-                else {
-                    subTask = new SubTask(mnote, mdesc, mtime);
-                    subTaskViewMOdel.insert(subTask);
-                }
 
+            if (TextUtils.isEmpty(mdesc) && TextUtils.isEmpty(mtime)) {
+                subTask = new SubTask(mnote);
                 subTaskViewMOdel.insert(subTask);
-                Intent i= new Intent(getApplicationContext(),MainActivity.class);
-                startActivity(i);
-
-
             }
-            finish();
+            else {
+                subTask = new SubTask(mnote, mdesc, mtime);
+                subTaskViewMOdel.insert(subTask);
+            }
+
+
+            setResult(RESULT_OK, resultintent);
+            Intent i = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(i);
+
+
         }
-
-
+        finish();
+    }
 
 
     private void showDateTime() {
 
-        Calendar calendar= Calendar.getInstance();
-        int year= calendar.get(Calendar.YEAR);
-        int month= calendar.get(Calendar.MONTH);
-        int day=calendar.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePickerDialog= new DatePickerDialog(AddSubTaskActivity.this,this,year,month,day);
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddSubTaskActivity.this, this, year, month, day);
         datePickerDialog.show();
     }
+
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-        Calendar calendar= Calendar.getInstance();
-        int hour= calendar.get(Calendar.HOUR_OF_DAY);
-        int minute=calendar.get(Calendar.MINUTE);
+        Calendar calendar = Calendar.getInstance();
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(AddSubTaskActivity.this,this,hour,minute, DateFormat.is24HourFormat(this));
+        TimePickerDialog timePickerDialog = new TimePickerDialog(AddSubTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
         edsubdatettime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
         timePickerDialog.show();
     }

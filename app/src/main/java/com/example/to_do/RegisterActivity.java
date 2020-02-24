@@ -139,6 +139,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         if (EditTextEmptyCheck) {
             progressDialog.setMessage("Please Wait, We are Registering Your Data on Server");
             progressDialog.show();
+
             firebaseAuth.createUserWithEmailAndPassword(memail, mpass)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override

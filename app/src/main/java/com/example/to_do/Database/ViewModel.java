@@ -33,9 +33,9 @@ public class ViewModel extends AndroidViewModel {
         return mAllNotes;
     }
 
-
-    public void update(Task task) {
+    public void updateName(Task task) {
         new UpdateAsyncTask(taskDao).execute(task);
+
     }
 
     public void delete(Task task) {
@@ -75,25 +75,30 @@ public class ViewModel extends AndroidViewModel {
 
         @Override
         protected Void doInBackground(Task... tasks) {
-            mTaskDao.update(tasks[0]);
+            mTaskDao.updateName(tasks[0]);
             return null;
         }
     }
 
 
     @SuppressLint("StaticFieldLeak")
-    private class DeleteAsyncTask extends AsyncTask<Task,Void,Void> {
+    private class DeleteAsyncTask extends AsyncTask<Task, Void, Void> {
         TaskDao mTaskDao;
-       DeleteAsyncTask( TaskDao mTaskDao) {
+
+        DeleteAsyncTask(TaskDao mTaskDao) {
             this.mTaskDao = mTaskDao;
         }
 
 
-
         @Override
-        protected Void doInBackground(Task...tasks) {
+        protected Void doInBackground(Task... tasks) {
             mTaskDao.delete(tasks[0]);
             return null;
         }
+    }
+
+    public LiveData<Task> getNote(int noteId) {
+
+        return taskDao.getNote(noteId);
     }
 }
