@@ -49,6 +49,8 @@
     <string name="cancel">Cancel</string>
     <string name="passwordnotmatch">Password Does Not Match</string>
     <string name="add_subtasks">Add Subtasks</string>
+    <string name="by_date">By Date</string>
+    <string name="my_order">My Order</string>
 
 
 </resources>

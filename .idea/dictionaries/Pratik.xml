@@ -2,9 +2,13 @@
   <dictionary name="Pratik">
     <words>
       <w>btnadd</w>
+      <w>btnsubadd</w>
       <w>edadd</w>
       <w>eddatetime</w>
       <w>eddesc</w>
+      <w>edsubdatettime</w>
+      <w>edsubdesc</w>
+      <w>edsubtitle</w>
     </words>
   </dictionary>
 </component>

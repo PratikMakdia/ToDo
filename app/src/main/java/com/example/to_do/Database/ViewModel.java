@@ -14,14 +14,21 @@ public class ViewModel extends AndroidViewModel {
 
     private String TAG = this.getClass().getSimpleName();
     private TaskDao taskDao;
+    private SubTaskDao subTaskDao;
+    private LiveData<List<SubTask>> mAllSubnotes;
     private LiveData<List<Task>> mAllNotes;
+    private LiveData<List<Task>> mAllNotesByDate;
 
     public ViewModel(Application application) {
         super(application);
 
         TaskDatabase taskDB = TaskDatabase.getDatabase(application);
         taskDao = taskDB.taskDao();
+        subTaskDao = taskDB.subTaskDao();
         mAllNotes = taskDao.getAllNotes();
+        mAllNotesByDate = taskDao.getAllNotesByDate();
+
+        mAllSubnotes =subTaskDao.getAllSubNotes();
     }
 
     public void insert(Task task) {
@@ -33,6 +40,12 @@ public class ViewModel extends AndroidViewModel {
         return mAllNotes;
     }
 
+    public LiveData<List<SubTask>> getAllSubNotes() {
+        return mAllSubnotes;
+    }
+
+
+
     public void updateName(Task task) {
         new UpdateAsyncTask(taskDao).execute(task);
 
@@ -42,10 +55,29 @@ public class ViewModel extends AndroidViewModel {
         new DeleteAsyncTask(taskDao).execute(task);
     }
 
+    public LiveData<List<Task>> getmAllNotesByDate() {
+
+        return mAllNotesByDate;
+    }
+
     @Override
     protected void onCleared() {
         super.onCleared();
         Log.i(TAG, "ViewModel Destroyrd");
+    }
+
+    public LiveData<Task> getNote(int noteId) {
+
+        return taskDao.getNote(noteId);
+    }
+
+
+    public LiveData<SubTask> getsubNote(int noteId) {
+
+        return subTaskDao.getSubNote(noteId);
+    }
+    public int maintaskid(String taskname) {
+        return taskDao.GetId(taskname);
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -95,10 +127,5 @@ public class ViewModel extends AndroidViewModel {
             mTaskDao.delete(tasks[0]);
             return null;
         }
-    }
-
-    public LiveData<Task> getNote(int noteId) {
-
-        return taskDao.getNote(noteId);
     }
 }

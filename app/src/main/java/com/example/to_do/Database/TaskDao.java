@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -22,19 +21,19 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id=:noteId")
     LiveData<Task> getNote(int noteId);
 
-    @Update
-    void update(Task task);
+
+    @Query("SELECT id from tasks WHERE name=:taskname")
+    int  GetId(String taskname);
+
     @Delete
     int delete(Task task);
 
-    @Query("SELECT MAX(word_order) FROM tasks")
-    int getLargestOrder();
 
-    @Update(onConflict = OnConflictStrategy.REPLACE)
-    void update(List<Task> wordEntities);
 
-    @Query("SELECT * FROM tasks ORDER BY word_order ASC")
-    LiveData<List<Task>> sortByOrder();
+
+    @Query("SELECT * FROM tasks ORDER BY Date ASC")
+    LiveData <List<Task>> getAllNotesByDate();
+
 
     @Update
     void updateName(Task task);

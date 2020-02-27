@@ -6,15 +6,16 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.Add_Main_Task;
+import com.example.to_do.AddMainTaskActivity;
+import com.example.to_do.AddSubTaskActivity;
 import com.example.to_do.MainActivity;
 import com.example.to_do.R;
 
@@ -26,9 +27,11 @@ import java.util.ListIterator;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> implements List<Object> {
 
     private List<Task> mtaskes;
+    private List<SubTask> msubtaskes;
     private LayoutInflater layoutInflater;
     private Context mcontext;
     private OnDeleteClickListener onDeleteClickListener;
+    private CardView cardView,subcardVIew;
 
 
     public TaskListAdapter(Context context, OnDeleteClickListener listener) {
@@ -58,10 +61,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             // Covers the case of data not being ready yet.
             holder.TaskItemView.setText(R.string.no_note);
         }
+
+
+
+        if(msubtaskes!=null)
+        {
+            SubTask subTaskask = msubtaskes.get(position);
+            holder.setSubData(subTaskask.getSub_name(), position);
+            holder.setListners();
+
+        }
     }
 
     public void setIndexInDatabase() {
         TaskDao taskDao = TaskDatabase.getDatabase(mcontext).taskDao();
+        SubTaskDao subTaskDao=TaskDatabase.getDatabase(mcontext).subTaskDao();
         for (Task task : mtaskes) {
             task.setOrder(mtaskes.indexOf(task));
             taskDao.insert(task);
@@ -74,12 +88,22 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     public int getItemCount() {
         if (mtaskes != null)
             return mtaskes.size();
+
+        if(msubtaskes!=null)
+            return msubtaskes.size();
         return 0;
     }
 
     public void setNotes(List<Task> tasks) {
         mtaskes = tasks;
         notifyDataSetChanged();
+    }
+
+    public void setSubNotes(List<SubTask> subTasks)
+    {
+        msubtaskes=subTasks;
+        notifyDataSetChanged();
+
     }
 
     @Override
@@ -210,40 +234,56 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     public class TaskViewHolder extends RecyclerView.ViewHolder {
 
 
-        private TextView TaskItemView;
-        private ImageView imgDelete, imgEdit;
+        private TextView TaskItemView,SubTaskItemVIew;
+        private ImageView imgDelete, subimgdelete;
         private int mPosition;
-        private Button btnupdate, btnadd;
+
 
         public TaskViewHolder(View itemView) {
             super(itemView);
 
             TaskItemView = itemView.findViewById(R.id.txvNote);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
-            imgEdit = itemView.findViewById(R.id.ivRowEdit);
-            btnadd = itemView.findViewById(R.id.btnmainadd);
-            btnupdate = itemView.findViewById(R.id.btnmainupdate);
 
+            cardView = itemView.findViewById(R.id.cardview);
+            subcardVIew=itemView.findViewById(R.id.subcardview);
+            subimgdelete=itemView.findViewById(R.id.subivRowDelete);
+            SubTaskItemVIew=itemView.findViewById(R.id.subtxNote);
         }
 
         public void setData(String note, int position) {
             TaskItemView.setText(note);
-
             mPosition = position;
         }
 
+        public void setSubData(String note, int position) {
+            SubTaskItemVIew.setText(note);
+            mPosition = position;
+        }
+
+
         public void setListners() {
-            imgEdit.setOnClickListener(new View.OnClickListener() {
+
+
+            cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
-
-                    Intent intent = new Intent(mcontext, Add_Main_Task.class);
+                    Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
                     intent.putExtra("note_id", mtaskes.get(mPosition).getId());
                     ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
-
                 }
             });
+
+            subcardVIew.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mcontext, AddSubTaskActivity.class);
+                    intent.putExtra("note_id", msubtaskes.get(mPosition).getId());
+                    ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
+                }
+            });
+
+
 
 
             imgDelete.setOnClickListener(new View.OnClickListener() {

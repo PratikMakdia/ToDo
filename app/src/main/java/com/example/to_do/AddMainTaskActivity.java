@@ -4,12 +4,17 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -19,6 +24,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -31,20 +37,16 @@ import com.example.to_do.Database.TaskListAdapter;
 import com.example.to_do.Database.ViewModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.FileNotFoundException;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
-public class Add_Main_Task extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskListAdapter.OnDeleteClickListener {
+public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskListAdapter.OnDeleteClickListener {
 
 
-    private List<Task> mtaskes;
-    private LayoutInflater layoutInflater;
-    private Context mcontext;
-    private TaskListAdapter.OnDeleteClickListener onDeleteClickListener;
-    private int mPosition;
 
     private EditText edadd, eddesc, eddatetime;
+    private TextView tvimage;
     private FloatingActionButton fab;
     private Button btnadd, btnupdate;
     private ViewModel viewModel;
@@ -53,8 +55,8 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
     private TaskListAdapter taskListAdapter;
     private int noteId;
 
-
-
+    private static ImageView gallery_image;
+    private final int select_photo = 1;
 
 
     @Override
@@ -63,7 +65,7 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         Objects.requireNonNull(getSupportActionBar()).hide();
-        setContentView(R.layout.activity_add__main__task);
+        setContentView(R.layout.activity_addmaintask);
 
         initialize();
         edittextEmptyornot();
@@ -116,9 +118,11 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
         eddesc = findViewById(R.id.details);
         eddatetime = findViewById(R.id.date_time);
         btnadd = findViewById(R.id.btnmainadd);
+        tvimage=findViewById(R.id.image);
         addsub = findViewById(R.id.txaddsubtask);
         btnupdate = findViewById(R.id.btnmainupdate);
         imgDelete = findViewById(R.id.ivRowDelete);
+        gallery_image = (ImageView) findViewById(R.id.gallery_imageview);
         taskListAdapter = new TaskListAdapter(this, this);
         Bundle bundle = getIntent().getExtras();
 
@@ -135,9 +139,25 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
             public void onChanged(@Nullable Task task) {
                 if (task != null) {
                     edadd.setText(task.getName());
-                    eddesc.setText(task.getName());
-                    eddatetime.setText(task.getName());
-                    imgDelete.setVisibility(View.VISIBLE);
+                    eddesc.setText(task.getDescription());
+                    eddatetime.setText(task.getDate());
+                    tvimage.setText(task.getImg_path());
+                    addsub.setVisibility(View.GONE);
+                    btnupdate.setVisibility(View.VISIBLE);
+                    btnadd.setVisibility(View.GONE);
+
+                    gallery_image.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
+                    Drawable d = Drawable.createFromPath(task.getImg_path());
+                    gallery_image.setImageDrawable(d);
+                   /* File imgFile = new  File(tvimage.getText().toString());
+
+                    if(imgFile.exists()){
+
+                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath());
+                        gallery_image.setImageBitmap(myBitmap);
+
+                    }*/
+                    /* imgDelete.setVisibility(View.VISIBLE);*/
                 }
             }
         });
@@ -154,7 +174,9 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
         eddatetime.setOnClickListener(this);
         btnadd.setOnClickListener(this);
         addsub.setOnClickListener(this);
-        imgDelete.setOnClickListener(this);
+        btnupdate.setOnClickListener(this);
+        /*imgDelete.setOnClickListener(this);*/
+        tvimage.setOnClickListener(this);
 
     }
 
@@ -173,6 +195,10 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
 
         switch (v.getId()) {
 
+            case R.id.image:
+                uploadImage();
+                break;
+
             case R.id.date_time:
                 showDateTime();
                 break;
@@ -183,16 +209,53 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
             case R.id.btnmainadd:
                 Add_Data();
                 break;
-            case R.id.ivRowDelete:
-
-
-
+            /*case R.id.ivRowDelete:
+                break;*/
+            case R.id.btnmainupdate:
+                updatedata();
                 break;
 
         }
     }
 
+    private void uploadImage() {
 
+        Intent in = new Intent(Intent.ACTION_PICK);
+        in.setType("image/*");
+        startActivityForResult(in, select_photo);
+
+
+
+
+    }
+
+    private void updatedata() {
+
+
+        Intent result = new Intent();
+        if (TextUtils.isEmpty(edadd.getText())) {
+            setResult(RESULT_CANCELED, result);
+        } else {
+
+            Task task;
+            String updatetitle = edadd.getText().toString();
+            String updatedesc = eddesc.getText().toString();
+            String updatedatetime = eddatetime.getText().toString();
+            String updatepath=tvimage.getText().toString();
+
+
+            task = new Task(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
+            viewModel.updateName(task);
+            setResult(RESULT_OK, result);
+            finish();
+        }
+
+    }
+
+
+    /**
+     * for Add Main Task data in Room Database
+     */
     public void Add_Data() {
 
 
@@ -205,20 +268,16 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
             String note = edadd.getText().toString();
             String desc = eddesc.getText().toString();
             String time = eddatetime.getText().toString();
+            String path= tvimage.getText().toString();
             setResult(RESULT_OK, resultintent);
             if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time)) {
                 task = new Task(note);
                 viewModel.insert(task);
-               /* int mid = task.getId();
-                String id = String.valueOf(mid);
-                Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();*/
 
             } else {
-                task = new Task(note, desc, time);
+                task = new Task(note, desc, time,path);
                 viewModel.insert(task);
-              /*  int mid = task.getId();
-                String id = String.valueOf(mid);
-                Toast.makeText(getApplicationContext(), id, Toast.LENGTH_SHORT).show();*/
+
             }
 
         }
@@ -232,7 +291,7 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        DatePickerDialog datePickerDialog = new DatePickerDialog(Add_Main_Task.this, this, year, month, day);
+        DatePickerDialog datePickerDialog = new DatePickerDialog(AddMainTaskActivity.this, this, year, month, day);
         datePickerDialog.show();
     }
 
@@ -243,7 +302,7 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog;
-        timePickerDialog = new TimePickerDialog(Add_Main_Task.this, this, hour, minute, DateFormat.is24HourFormat(this));
+        timePickerDialog = new TimePickerDialog(AddMainTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
         eddatetime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
         timePickerDialog.show();
     }
@@ -262,26 +321,78 @@ public class Add_Main_Task extends AppCompatActivity implements View.OnClickList
     }
 
 
+    protected void onActivityResult(int requestcode, int resultcode,
+                                    Intent imagereturnintent) {
+        super.onActivityResult(requestcode, resultcode, imagereturnintent);
+        switch (requestcode) {
+            case select_photo:
+                if (resultcode == RESULT_OK) {
+                    Uri imageuri = imagereturnintent.getData();// Get intent
+                    String real_Path = getRealPathFromUri(AddMainTaskActivity.this,
+                            imageuri);
+                    tvimage.setText(real_Path);
+                    tvimage.setVisibility(View.VISIBLE);
+                    Bitmap bitmap = null;// call
+                    try {
+                        bitmap = decodeUri(AddMainTaskActivity.this, imageuri, 300);
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                    if (bitmap != null)
+                        gallery_image.setImageBitmap(bitmap);// Set image over
+                        // bitmap
 
-   /* public void createnote() {
-        mgr=(NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
-        Intent i2= new Intent(Intent.ACTION_DIAL, Uri.parse("tel:5556"));
-        PendingIntent pi2= PendingIntent.getActivity(this,0,i2,PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext());
-        builder.setContentTitle("Open ToDO APp");
-        builder.setSmallIcon(android.R.drawable.ic_menu_call);
-        builder.setContentText("");
-        builder.addAction(R.drawable.ic_done_black_24dp,"Complete Task",pi2);
-        builder.setContentIntent(pi2);
-        builder.setAutoCancel(true);
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O)
-        {
-            NotificationChannel channel=new
-                    NotificationChannel(channel_id,"Hello",NotificationManager.IMPORTANCE_DEFAULT);
-            builder.setChannelId(channel_id);
-            mgr.createNotificationChannel(channel);
+                    else
+                        Toast.makeText(AddMainTaskActivity.this,
+                                "Error while decoding image.",
+                                Toast.LENGTH_SHORT).show();
+                }
         }
-        mgr.notify(1,builder.build());
     }
-*/
+
+    // Method that deocde uri into bitmap. This method is necessary to deocde
+    // large size images to load over imageview
+    public static Bitmap decodeUri(Context context, Uri uri,
+                                   final int requiredSize) throws FileNotFoundException {
+        BitmapFactory.Options o = new BitmapFactory.Options();
+        o.inJustDecodeBounds = true;
+        BitmapFactory.decodeStream(context.getContentResolver()
+                .openInputStream(uri), null, o);
+
+        int width_tmp = o.outWidth, height_tmp = o.outHeight;
+        int scale = 1;
+
+        while (true) {
+            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
+                break;
+            width_tmp /= 2;
+            height_tmp /= 2;
+            scale *= 2;
+        }
+
+        BitmapFactory.Options o2 = new BitmapFactory.Options();
+        o2.inSampleSize = scale;
+        return BitmapFactory.decodeStream(context.getContentResolver()
+                .openInputStream(uri), null, o2);
+    }
+    // Get Original image path
+    public static String getRealPathFromUri(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null,
+                    null, null);
+            int column_index = 0;
+            if (cursor != null) {
+                column_index = cursor
+                        .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            }
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
 }

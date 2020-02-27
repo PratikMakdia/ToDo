@@ -23,11 +23,30 @@ public class Task {
     @ColumnInfo(name = "Date")
     private String date;
 
+    @Ignore
+    public Task(int id, String name, String description, String date, String img_path) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.img_path = img_path;
+    }
+
+    @ColumnInfo(name = "img_path")
+    private String img_path;
+
     @ColumnInfo(name ="word_order")
     private int order;
 
+    public Task(int id, String name, String description, String date) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date = date;
+    }
 
-    public Task( String name, String description, String date, int order) {
+    @Ignore
+    public Task(String name, String description, String date, int order) {
         this.name = name;
         this.description = description;
         this.date = date;
@@ -85,5 +104,21 @@ public class Task {
 
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    @Ignore
+    public Task(String name, String description, String date, String img_path) {
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.img_path = img_path;
+    }
+
+    public String getImg_path() {
+        return img_path;
+    }
+
+    public void setImg_path(String img_path) {
+        this.img_path = img_path;
     }
 }

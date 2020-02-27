@@ -25,10 +25,29 @@ public class SubTask {
     @ColumnInfo(name = "sub_Date_Time")
     private String sub_date_time;
 
+
+    @ColumnInfo(name = "sub_img_path")
+    private String sub_img_path;
+
     @ColumnInfo(name = "maintaskid")
     private int maintask_id;
 
+    @Ignore
+    public SubTask(int id, String sub_name, String sub_description, String sub_date_time, String sub_img_path) {
+        this.id = id;
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.sub_date_time = sub_date_time;
+        this.sub_img_path = sub_img_path;
+    }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getSub_name() {
         return sub_name;
@@ -67,12 +86,29 @@ public class SubTask {
         this.sub_name = sub_name;
     }
 
+    public String getSub_img_path() {
+        return sub_img_path;
+    }
+
+    public void setSub_img_path(String sub_img_path) {
+        this.sub_img_path = sub_img_path;
+    }
+
     @Ignore
     public SubTask(String sub_name, String sub_description, String sub_date_time) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
         this.sub_date_time = sub_date_time;
     }
+
+    @Ignore
+    public SubTask(String sub_name, String sub_description, String sub_date_time, String sub_img_path) {
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.sub_date_time = sub_date_time;
+        this.sub_img_path = sub_img_path;
+    }
+
     @Ignore
     public SubTask(String sub_name, String sub_description, String sub_date_time, int maintask_id) {
         this.sub_name = sub_name;
