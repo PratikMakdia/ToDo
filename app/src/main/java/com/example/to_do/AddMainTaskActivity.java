@@ -41,7 +41,7 @@ import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, TaskListAdapter.OnDeleteClickListener {
+public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
 
 
@@ -123,7 +123,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         btnupdate = findViewById(R.id.btnmainupdate);
         imgDelete = findViewById(R.id.ivRowDelete);
         gallery_image = (ImageView) findViewById(R.id.gallery_imageview);
-        taskListAdapter = new TaskListAdapter(this, this);
+        /*taskListAdapter = new TaskListAdapter(this ,this);*/
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
@@ -315,10 +315,6 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
     }
 
-    @Override
-    public void OnDeleteClickListener(Task myTask) {
-        viewModel.delete(myTask);
-    }
 
 
     protected void onActivityResult(int requestcode, int resultcode,

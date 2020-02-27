@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.Database.SubTask;
+import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
 import com.example.to_do.Database.ViewModel;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     RecyclerView recyclerView;
     Button btnupdate;
 
+    private SubTaskViewMOdel subTaskViewMOdel;
     // private String TAG = this.getClass().getSimpleName();
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
@@ -137,6 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         viewModel.getAllSubNotes().observe(this, new Observer<List<SubTask>>() {
             @Override
             public void onChanged(List<SubTask> subTasks) {
+
                 taskListAdapter.setSubNotes(subTasks);
             }
         });
@@ -269,6 +272,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    @Override
+    public void OnDeleteClickListener(SubTask subTask) {
+        subTaskViewMOdel.delete(subTask);
+
+    }
+
+
     /**
      * from user back pressed
      */
@@ -336,6 +346,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         taskListAdapter.setNotes(tasks);
 
+
                     }
                 });
 
@@ -345,17 +356,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
                     @Override
                     public void onChanged(List<Task> tasks) {
-
-
-
                         taskListAdapter.setNotes(tasks);
-
 
                     }
                 });
                 break;
-
-
         }
         return false;
     }

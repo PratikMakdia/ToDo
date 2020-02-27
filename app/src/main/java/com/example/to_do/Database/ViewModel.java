@@ -51,7 +51,8 @@ public class ViewModel extends AndroidViewModel {
 
     }
 
-    public void delete(Task task) {
+    public void delete(Task task)
+    {
         new DeleteAsyncTask(taskDao).execute(task);
     }
 

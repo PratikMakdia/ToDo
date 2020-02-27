@@ -38,6 +38,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         layoutInflater = LayoutInflater.from(context);
         mcontext = context;
         this.onDeleteClickListener = listener;
+
     }
 
     @NonNull
@@ -72,6 +73,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         }
     }
+/*
 
     public void setIndexInDatabase() {
         TaskDao taskDao = TaskDatabase.getDatabase(mcontext).taskDao();
@@ -83,6 +85,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
 
     }
+*/
 
     @Override
     public int getItemCount() {
@@ -229,6 +232,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     public interface OnDeleteClickListener {
         void OnDeleteClickListener(Task myTask);
+
+        void OnDeleteClickListener(SubTask subTask);
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder {
@@ -237,6 +242,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         private TextView TaskItemView,SubTaskItemVIew;
         private ImageView imgDelete, subimgdelete;
         private int mPosition;
+        private int msubPosition;
 
 
         public TaskViewHolder(View itemView) {
@@ -258,7 +264,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
         public void setSubData(String note, int position) {
             SubTaskItemVIew.setText(note);
-            mPosition = position;
+            msubPosition = position;
         }
 
 
@@ -278,7 +284,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mcontext, AddSubTaskActivity.class);
-                    intent.putExtra("note_id", msubtaskes.get(mPosition).getId());
+                    intent.putExtra("note_id", msubtaskes.get(msubPosition).getId());
                     ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
                 }
             });
@@ -291,6 +297,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 public void onClick(View v) {
                     if (onDeleteClickListener != null) {
                         onDeleteClickListener.OnDeleteClickListener(mtaskes.get(mPosition));
+                    }
+                }
+            });
+
+            subimgdelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onDeleteClickListener != null) {
+                        onDeleteClickListener.OnDeleteClickListener(msubtaskes.get(msubPosition));
                     }
                 }
             });
