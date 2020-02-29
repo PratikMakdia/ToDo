@@ -63,7 +63,8 @@
         android:fontFamily="@style/FontOpenSans"
         android:orientation="vertical">
 
-        <include layout="@layout/content_basic" />
+        <include
+            layout="@layout/content_basic" />
 
     </LinearLayout>
 

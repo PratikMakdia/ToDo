@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.Database.SubTask;
+import com.example.to_do.Database.SubTaskListAdapter;
 import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
@@ -43,13 +44,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView popupmenu;
 
     TextView txnote, txmytasks;
-    RecyclerView recyclerView;
+    RecyclerView recyclerView,subrecyclerview;
     Button btnupdate;
 
     private SubTaskViewMOdel subTaskViewMOdel;
     // private String TAG = this.getClass().getSimpleName();
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
+    private SubTaskListAdapter subTaskListAdapter;
     private ImageView imglogout;
     private FloatingActionButton fab;
 
@@ -80,15 +82,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnupdate=findViewById(R.id.btnmainupdate);
         popupmenu=findViewById(R.id.popup_order);
         recyclerView = findViewById(R.id.recyclerview);
-
+        subrecyclerview= findViewById(R.id.subrecyclerview);
 
         taskListAdapter = new TaskListAdapter(this, this);
         recyclerView.setAdapter(taskListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+
+
+
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -113,7 +117,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             getallnoteObserver();
+   /*     subTaskViewMOdel.getmAllsubNote().observe(this, new Observer<List<SubTask>>() {
+            @Override
+            public void onChanged(List<SubTask> subTasks) {
 
+                subTaskListAdapter.setSubNotes(subTasks);
+            }
+        });*/
+        /*    */
 
     }
 
@@ -122,31 +133,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void getallnoteObserver() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        subTaskViewMOdel=ViewModelProviders.of(this).get(SubTaskViewMOdel.class);
         viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
             @Override
             public void onChanged(List<Task> tasks) {
 
 
-                ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                itemTouchHelper.attachToRecyclerView(recyclerView);
+
                 taskListAdapter.setNotes(tasks);
                 //taskListAdapter.setSubNotes(subTasks);
+
+
 
 
             }
         });
 
-        viewModel.getAllSubNotes().observe(this, new Observer<List<SubTask>>() {
+       /* viewModel.getAllSubNotes().observe(this, new Observer<List<SubTask>>() {
             @Override
             public void onChanged(List<SubTask> subTasks) {
 
                 taskListAdapter.setSubNotes(subTasks);
             }
-        });
+        });*/
     }
 
 
+    ItemTouchHelper.SimpleCallback callback=new ItemTouchHelper.SimpleCallback(0, 0) {
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return false;
+        }
+
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+
+        }
+    };
+
     ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN |ItemTouchHelper.START|ItemTouchHelper.END, 0) {
+
+
+
+/*
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }*/
 
 
         @Override
@@ -163,10 +202,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 for (int i = startposition; i > endposition; i--) {
                     Collections.swap(taskListAdapter, i, i - 1);
+
                 }
             }
             Objects.requireNonNull(recyclerView.getAdapter()).notifyItemMoved(startposition, endposition);
 
+/*
+            Task task;
+            task= new Task(endposition);
+            viewModel.insert(task);*/
             String abc= String.valueOf(startposition);
             Toast.makeText(getApplicationContext(),abc,Toast.LENGTH_SHORT).show();
             String xyz= String.valueOf(endposition);
@@ -344,6 +388,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onChanged(List<Task> tasks) {
 
+                       ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+                        itemTouchHelper.attachToRecyclerView(recyclerView);
                         taskListAdapter.setNotes(tasks);
 
 
@@ -356,6 +402,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
                     @Override
                     public void onChanged(List<Task> tasks) {
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+                        itemTouchHelper.attachToRecyclerView(recyclerView);
                         taskListAdapter.setNotes(tasks);
 
                     }
@@ -364,6 +412,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         return false;
     }
+
+
+
 
 
 }

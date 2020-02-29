@@ -22,6 +22,11 @@ public class Task {
 
     @ColumnInfo(name = "Date")
     private String date;
+    @ColumnInfo(name = "img_path")
+    private String img_path;
+
+    @ColumnInfo(name ="word_order")
+    private int order;
 
     @Ignore
     public Task(int id, String name, String description, String date, String img_path) {
@@ -32,11 +37,12 @@ public class Task {
         this.img_path = img_path;
     }
 
-    @ColumnInfo(name = "img_path")
-    private String img_path;
 
-    @ColumnInfo(name ="word_order")
-    private int order;
+
+    @Ignore
+    public Task(int order) {
+        this.order = order;
+    }
 
     public Task(int id, String name, String description, String date) {
         this.id = id;

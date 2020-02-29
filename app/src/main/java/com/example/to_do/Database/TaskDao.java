@@ -31,6 +31,8 @@ public interface TaskDao {
 
 
 
+
+
     @Query("SELECT * FROM tasks ORDER BY Date ASC")
     LiveData <List<Task>> getAllNotesByDate();
 

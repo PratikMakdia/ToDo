@@ -9,6 +9,8 @@
       <w>edsubdatettime</w>
       <w>edsubdesc</w>
       <w>edsubtitle</w>
+      <w>mcontext</w>
+      <w>msubcontext</w>
     </words>
   </dictionary>
 </component>

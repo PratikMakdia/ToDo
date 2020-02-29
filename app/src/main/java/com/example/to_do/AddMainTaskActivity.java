@@ -269,6 +269,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             String desc = eddesc.getText().toString();
             String time = eddatetime.getText().toString();
             String path= tvimage.getText().toString();
+
             setResult(RESULT_OK, resultintent);
             if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time)) {
                 task = new Task(note);

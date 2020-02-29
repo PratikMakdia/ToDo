@@ -15,7 +15,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.AddMainTaskActivity;
-import com.example.to_do.AddSubTaskActivity;
 import com.example.to_do.MainActivity;
 import com.example.to_do.R;
 
@@ -31,7 +30,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     private LayoutInflater layoutInflater;
     private Context mcontext;
     private OnDeleteClickListener onDeleteClickListener;
-    private CardView cardView,subcardVIew;
+    private CardView cardView;
 
 
     public TaskListAdapter(Context context, OnDeleteClickListener listener) {
@@ -65,13 +64,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
 
 
-        if(msubtaskes!=null)
+
+
+       /* if(msubtaskes!=null)
         {
             SubTask subTaskask = msubtaskes.get(position);
             holder.setSubData(subTaskask.getSub_name(), position);
             holder.setListners();
 
-        }
+        }*/
     }
 /*
 
@@ -92,8 +93,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         if (mtaskes != null)
             return mtaskes.size();
 
-        if(msubtaskes!=null)
-            return msubtaskes.size();
         return 0;
     }
 
@@ -102,12 +101,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         notifyDataSetChanged();
     }
 
-    public void setSubNotes(List<SubTask> subTasks)
-    {
-        msubtaskes=subTasks;
-        notifyDataSetChanged();
-
-    }
 
     @Override
     public int size() {
@@ -252,9 +245,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
 
             cardView = itemView.findViewById(R.id.cardview);
-            subcardVIew=itemView.findViewById(R.id.subcardview);
+           /* subcardVIew=itemView.findViewById(R.id.subcardview);
             subimgdelete=itemView.findViewById(R.id.subivRowDelete);
-            SubTaskItemVIew=itemView.findViewById(R.id.subtxNote);
+            SubTaskItemVIew=itemView.findViewById(R.id.subtxNote);*/
         }
 
         public void setData(String note, int position) {
@@ -262,10 +255,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             mPosition = position;
         }
 
-        public void setSubData(String note, int position) {
+      /*  public void setSubData(String note, int position) {
             SubTaskItemVIew.setText(note);
             msubPosition = position;
-        }
+        }*/
 
 
         public void setListners() {
@@ -280,14 +273,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 }
             });
 
-            subcardVIew.setOnClickListener(new View.OnClickListener() {
+           /* subcardVIew.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mcontext, AddSubTaskActivity.class);
                     intent.putExtra("note_id", msubtaskes.get(msubPosition).getId());
                     ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
                 }
-            });
+            });*/
 
 
 
@@ -301,15 +294,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 }
             });
 
-            subimgdelete.setOnClickListener(new View.OnClickListener() {
+           /* subimgdelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (onDeleteClickListener != null) {
                         onDeleteClickListener.OnDeleteClickListener(msubtaskes.get(msubPosition));
                     }
                 }
-            });
+            });*/
         }
     }
+
 
 }

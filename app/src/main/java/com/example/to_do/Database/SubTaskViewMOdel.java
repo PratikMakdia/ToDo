@@ -13,17 +13,22 @@ public class SubTaskViewMOdel extends AndroidViewModel {
 
     private static SubTaskDao subTaskDao;
     private String TAG = this.getClass().getSimpleName();
-    private TaskDao taskDao;
-    private LiveData<List<SubTask>> mAllNote;
+
+    private LiveData<List<SubTask>> mAllsubNote;
 
 
     public SubTaskViewMOdel(@NonNull Application application) {
         super(application);
 
         TaskDatabase taskDB = TaskDatabase.getDatabase(application);
-
         subTaskDao = taskDB.subTaskDao();
+        mAllsubNote=subTaskDao.getAllSubNotes();
 
+    }
+
+    public LiveData<List<SubTask>> getmAllsubNote()
+    {
+        return mAllsubNote;
     }
 
     public void insert(SubTask subtasks) {
