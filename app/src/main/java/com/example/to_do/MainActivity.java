@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void initVariables() {
 
         firebaseAuth = FirebaseAuth.getInstance();
-        txnote = findViewById(R.id.txvNote);
+        /*txnote = findViewById(R.id.txvNote);*/
         txmytasks = findViewById(R.id.my_tasks);
         imglogout = findViewById(R.id.iglogout);
         fab = findViewById(R.id.floataddmain);

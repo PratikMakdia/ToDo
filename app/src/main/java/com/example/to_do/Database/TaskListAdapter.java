@@ -3,9 +3,12 @@ package com.example.to_do.Database;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -62,6 +65,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             // Covers the case of data not being ready yet.
             holder.TaskItemView.setText(R.string.no_note);
         }
+
 
 
 
@@ -230,12 +234,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         void OnDeleteClickListener(SubTask subTask);
     }
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder {
+    public class TaskViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
 
         private TextView TaskItemView,SubTaskItemVIew;
         private ImageView imgDelete, subimgdelete;
         private int mPosition;
+        private CheckBox notecheck;
         private int msubPosition;
 
         private RecyclerView recyclerView;
@@ -243,7 +248,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         public TaskViewHolder(View itemView) {
             super(itemView);
 
-            TaskItemView = itemView.findViewById(R.id.txvNote);
+            notecheck=itemView.findViewById(R.id.maintaskCheck);
+//            TaskItemView = itemView.findViewById(R.id.txvNote);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
             recyclerView=itemView.findViewById(R.id.recyclerview);
             cardView = itemView.findViewById(R.id.cardview);
@@ -253,8 +259,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         }
 
         public void setData(String note, int position) {
-            TaskItemView.setText(note);
+            notecheck.setText(note);
+            //TaskItemView.setText(note);
             mPosition = position;
+
+            notecheck.setOnCheckedChangeListener(this);
         }
 
       /*  public void setSubData(String note, int position) {
@@ -306,6 +315,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                     }
                 }
             });*/
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if(isChecked)
+            {
+                notecheck.setPaintFlags(notecheck.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+                
+            }
+            else
+            {
+                notecheck.setPaintFlags(0);
+            }
         }
     }
 
