@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -23,7 +24,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.Database.SubTask;
-import com.example.to_do.Database.SubTaskListAdapter;
 import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
@@ -44,16 +44,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView popupmenu;
 
     TextView txnote, txmytasks;
-    RecyclerView recyclerView,subrecyclerview;
+    RecyclerView recyclerView;
     Button btnupdate;
 
     private SubTaskViewMOdel subTaskViewMOdel;
-    // private String TAG = this.getClass().getSimpleName();
+
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
-    private SubTaskListAdapter subTaskListAdapter;
+
     private ImageView imglogout;
     private FloatingActionButton fab;
+    private CardView cardView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,17 +83,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnupdate=findViewById(R.id.btnmainupdate);
         popupmenu=findViewById(R.id.popup_order);
         recyclerView = findViewById(R.id.recyclerview);
-        subrecyclerview= findViewById(R.id.subrecyclerview);
 
+        cardView = findViewById(R.id.cardview);
         taskListAdapter = new TaskListAdapter(this, this);
         recyclerView.setAdapter(taskListAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-
-
-
-
-
 
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -134,36 +129,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void getallnoteObserver() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         subTaskViewMOdel=ViewModelProviders.of(this).get(SubTaskViewMOdel.class);
+
         viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
+
             @Override
             public void onChanged(List<Task> tasks) {
 
-
-
                 taskListAdapter.setNotes(tasks);
-                //taskListAdapter.setSubNotes(subTasks);
-
-
-
 
             }
         });
 
-       /* viewModel.getAllSubNotes().observe(this, new Observer<List<SubTask>>() {
-            @Override
-            public void onChanged(List<SubTask> subTasks) {
-
-                taskListAdapter.setSubNotes(subTasks);
-            }
-        });*/
     }
 
 
-    ItemTouchHelper.SimpleCallback callback=new ItemTouchHelper.SimpleCallback(0, 0) {
-
+   final  ItemTouchHelper.Callback callback= new ItemTouchHelper.Callback() {
         @Override
         public boolean isLongPressDragEnabled() {
             return false;
+        }
+        @Override
+        public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
+            return 0;
         }
 
         @Override
@@ -176,17 +163,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     };
+   /* ItemTouchHelper.SimpleCallback callback=new ItemTouchHelper.SimpleCallback(0, 0) {
 
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN |ItemTouchHelper.START|ItemTouchHelper.END, 0) {
-
-
-
-/*
         @Override
         public boolean isLongPressDragEnabled() {
-            return true;
-        }*/
+            return false;
+        }
+        @Override
+        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
 
+            return false;
+        }
+        @Override
+        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+        }
+    };*/
+   final  ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN |ItemTouchHelper.START|ItemTouchHelper.END, 0) {
 
         @Override
         public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
@@ -198,8 +190,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 for (int i = startposition; i < endposition; i++) {
                     Collections.swap(taskListAdapter, i, i + 1);
                 }
+            }
 
-            } else {
+            else {
                 for (int i = startposition; i > endposition; i--) {
                     Collections.swap(taskListAdapter, i, i - 1);
 
@@ -216,9 +209,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String xyz= String.valueOf(endposition);
             Toast.makeText(getApplicationContext(),xyz,Toast.LENGTH_SHORT).show();
 
-
-
-            return false;
+            return true;
         }
 
         @Override
@@ -384,24 +375,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.bydate:
+
+
                 viewModel.getmAllNotesByDate().observe(this, new Observer<List<Task>>() {
+
                     @Override
                     public void onChanged(List<Task> tasks) {
-
-                       ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
+                        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
                         itemTouchHelper.attachToRecyclerView(recyclerView);
                         taskListAdapter.setNotes(tasks);
-
-
                     }
                 });
-
                 break;
             case R.id.myorder:
 
                 viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
                     @Override
-                    public void onChanged(List<Task> tasks) {
+                    public void onChanged(final List<Task> tasks) {
+
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
                         itemTouchHelper.attachToRecyclerView(recyclerView);
                         taskListAdapter.setNotes(tasks);

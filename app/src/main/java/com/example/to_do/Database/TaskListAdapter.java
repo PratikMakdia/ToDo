@@ -52,6 +52,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
 
+
         if (mtaskes != null) {
             Task task = mtaskes.get(position);
             holder.setData(task.getName(), position);
@@ -237,13 +238,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         private int mPosition;
         private int msubPosition;
 
+        private RecyclerView recyclerView;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
 
             TaskItemView = itemView.findViewById(R.id.txvNote);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
-
+            recyclerView=itemView.findViewById(R.id.recyclerview);
             cardView = itemView.findViewById(R.id.cardview);
            /* subcardVIew=itemView.findViewById(R.id.subcardview);
             subimgdelete=itemView.findViewById(R.id.subivRowDelete);
@@ -264,11 +266,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         public void setListners() {
 
 
+
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
                     intent.putExtra("note_id", mtaskes.get(mPosition).getId());
+                   /* intent.putExtra("sub_note_id", msubtaskes.get(msubPosition).getId());*/
                     ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
                 }
             });

@@ -31,6 +31,13 @@ public class SubTaskViewMOdel extends AndroidViewModel {
         return mAllsubNote;
     }
 
+    public LiveData<SubTask> getsubNote(int noteId) {
+
+        return subTaskDao.getSubNote(noteId);
+    }
+
+
+
     public void insert(SubTask subtasks) {
         new InsertAsyncTask(subTaskDao).execute(subtasks);
     }

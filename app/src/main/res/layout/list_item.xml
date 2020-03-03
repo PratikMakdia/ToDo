@@ -10,8 +10,10 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardview"
+        android:clickable="false"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:focusable="false">
 
             <RelativeLayout
                 android:id="@+id/relative"
@@ -50,7 +52,7 @@
 
 
     </androidx.cardview.widget.CardView>
-    <androidx.recyclerview.widget.RecyclerView
+  <!--  <androidx.recyclerview.widget.RecyclerView
 
         android:layout_below="@+id/cardview"
         android:id="@+id/subrecyclerview"
@@ -60,7 +62,7 @@
         android:clipToPadding="false">
 
 
-    </androidx.recyclerview.widget.RecyclerView>
+    </androidx.recyclerview.widget.RecyclerView>-->
     </LinearLayout>
 
 

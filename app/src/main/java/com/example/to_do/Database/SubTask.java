@@ -116,4 +116,10 @@ public class SubTask {
         this.sub_date_time = sub_date_time;
         this.maintask_id = maintask_id;
     }
+
+    @Ignore
+    public SubTask(String sub_name, String sub_description) {
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+    }
 }

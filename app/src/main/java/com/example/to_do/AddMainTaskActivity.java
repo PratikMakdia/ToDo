@@ -32,6 +32,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.example.to_do.Database.SubTask;
+import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
 import com.example.to_do.Database.ViewModel;
@@ -41,19 +43,20 @@ import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
 
 
 
     private EditText edadd, eddesc, eddatetime;
-    private TextView tvimage;
+    private TextView tvimage,showsubtask;
     private FloatingActionButton fab;
     private Button btnadd, btnupdate;
     private ViewModel viewModel;
     private TextView addsub;
     private ImageView imgDelete;
+    private SubTaskViewMOdel subTaskViewMOdel;
     private TaskListAdapter taskListAdapter;
-    private int noteId;
+    private int noteId,subnoteId;
 
     private static ImageView gallery_image;
     private final int select_photo = 1;
@@ -123,20 +126,33 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         btnupdate = findViewById(R.id.btnmainupdate);
         imgDelete = findViewById(R.id.ivRowDelete);
         gallery_image = (ImageView) findViewById(R.id.gallery_imageview);
+        showsubtask=findViewById(R.id.showsubtask);
+
         /*taskListAdapter = new TaskListAdapter(this ,this);*/
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
             noteId = bundle.getInt("note_id");
+            subnoteId=bundle.getInt("sub_note_id");
 
         }
 
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        subTaskViewMOdel=ViewModelProviders.of(this).get(SubTaskViewMOdel.class);
         /* fab = findViewById(R.id.fab);*/
         LiveData<Task> note = viewModel.getNote(noteId);
+       /* LiveData<SubTask> subnote=subTaskViewMOdel.getsubNote(subnoteId);
+
+        subnote.observe(this, new Observer<SubTask>() {
+            @Override
+            public void onChanged(SubTask subTask) {
+                    showsubtask.setText(subTask.getSub_name());
+            }
+        });*/
         note.observe(this, new Observer<Task>() {
             @Override
             public void onChanged(@Nullable Task task) {
+                SubTask subTask;
                 if (task != null) {
                     edadd.setText(task.getName());
                     eddesc.setText(task.getDescription());
@@ -146,18 +162,15 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                     btnupdate.setVisibility(View.VISIBLE);
                     btnadd.setVisibility(View.GONE);
 
+                    showsubtask.setVisibility(View.VISIBLE);
+
                     gallery_image.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
                     Drawable d = Drawable.createFromPath(task.getImg_path());
                     gallery_image.setImageDrawable(d);
-                   /* File imgFile = new  File(tvimage.getText().toString());
 
-                    if(imgFile.exists()){
 
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath());
-                        gallery_image.setImageBitmap(myBitmap);
 
-                    }*/
-                    /* imgDelete.setVisibility(View.VISIBLE);*/
+
                 }
             }
         });
@@ -244,8 +257,25 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             String updatepath=tvimage.getText().toString();
 
 
-            task = new Task(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
-            viewModel.updateName(task);
+
+            if (TextUtils.isEmpty(updatedesc) || TextUtils.isEmpty(updatedatetime)||TextUtils.isEmpty(updatepath))
+            {
+                task = new Task(noteId,updatetitle);
+                viewModel.updateName(task);
+
+            }
+            else if(TextUtils.isEmpty(updatedatetime)||TextUtils.isEmpty(updatepath))
+            {
+                task = new Task(noteId,updatetitle,updatedesc);
+                viewModel.updateName(task);
+            }
+
+            else {
+                task = new Task(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
+                viewModel.updateName(task);
+            }
+
+
             setResult(RESULT_OK, result);
             finish();
         }
@@ -271,11 +301,19 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             String path= tvimage.getText().toString();
 
             setResult(RESULT_OK, resultintent);
-            if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time)) {
+            if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time)||TextUtils.isEmpty(path))
+            {
                 task = new Task(note);
                 viewModel.insert(task);
 
-            } else {
+            }
+            else if(TextUtils.isEmpty(time)||TextUtils.isEmpty(path))
+            {
+                task = new Task(note,desc);
+                viewModel.insert(task);
+            }
+
+            else {
                 task = new Task(note, desc, time,path);
                 viewModel.insert(task);
 
@@ -315,6 +353,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         eddatetime.setText(eddatetime.getText() + " -" + hourOfDay + ":" + minute);
 
     }
+
 
 
 

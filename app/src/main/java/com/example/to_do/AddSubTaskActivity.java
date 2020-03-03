@@ -65,8 +65,10 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-
-
+    /**
+     * for Initialize Variables
+     *
+     */
     private void initialize() {
         subTaskViewMOdel = new SubTaskViewMOdel((Application) getApplicationContext());
         edsubtitle = findViewById(R.id.show_sub_title);
@@ -202,14 +204,24 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
 
-            if (TextUtils.isEmpty(mdesc) && TextUtils.isEmpty(mtime)) {
+            if (TextUtils.isEmpty(mdesc) && TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath)) {
                 subTask = new SubTask(mnote);
                 subTaskViewMOdel.insert(subTask);
             }
+            else if(TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath))
+            {
+                subTask = new SubTask(mnote,mdesc);
+                subTaskViewMOdel.insert(subTask);
+            }
+
             else {
                 subTask = new SubTask(mnote, mdesc, mtime,msubpath);
                 subTaskViewMOdel.insert(subTask);
             }
+
+
+
+
 
 
             setResult(RESULT_OK, resultintent);
