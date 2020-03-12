@@ -7,7 +7,7 @@
 
 
     <TextView
-        android:id="@+id/Register"
+        android:id="@+id/tvSignUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -20,14 +20,14 @@
 
 
     <LinearLayout
-        android:id="@+id/rel_register"
+        android:id="@+id/rlRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginTop="120dp"
         android:fontFamily="@style/FontOpenSans"
         android:layout_marginRight="20dp"
-        android:background="@drawable/register_border"
+        android:background="@drawable/drawableregisterborder"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
@@ -48,7 +48,7 @@
 
 
         <EditText
-            android:id="@+id/edemail"
+            android:id="@+id/edEmail"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:fontFamily="@style/FontOpenSans"
@@ -63,7 +63,7 @@
             android:padding="10dp" />
 
         <TextView
-            android:id="@+id/txpasword"
+            android:id="@+id/tvPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/edemail"
@@ -78,7 +78,7 @@
              />
 
         <EditText
-            android:id="@+id/edpassword"
+            android:id="@+id/edPassword"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="25dp"
@@ -91,7 +91,7 @@
             android:inputType="textPassword"
             android:padding="10dp" />
         <TextView
-            android:id="@+id/cnfmtxpasword"
+            android:id="@+id/tvCnfmPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/edpassword"
@@ -106,7 +106,7 @@
             />
 
         <EditText
-            android:id="@+id/confmpassword"
+            android:id="@+id/edCnfmPassword"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="25dp"
@@ -121,7 +121,7 @@
 
 
         <Button
-            android:id="@+id/btnSignup"
+            android:id="@+id/btnSignUp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -136,10 +136,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/already_account"
+        android:id="@+id/tvAlreadyAccountMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rel_register"
+        android:layout_below="@id/rlRegister"
         android:layout_marginStart="45dp"
         android:layout_marginTop="20dp"
         android:fontFamily="@style/FontOpenSans"

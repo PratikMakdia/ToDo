@@ -8,17 +8,13 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -26,7 +22,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
 import com.example.to_do.Database.ViewModel;
@@ -42,30 +37,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     FirebaseAuth firebaseAuth;
-    private ImageView popupmenu;
-
-    private TextView txnote;
-    private RecyclerView recyclerView;
-    private  Button btnUpdate;
-
-    private SubTaskViewMOdel subTaskViewMOdel;
-
+    private ImageView ivMenuOrder;
+    private RecyclerView rvShowMainTask;
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
-    private ImageView imglogout;
-    private FloatingActionButton fab;
-    private CardView cardView;
+    private ImageView ivLogout;
+    private FloatingActionButton fbtnAddMainTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        Objects.requireNonNull(getSupportActionBar()).hide();
+
         setContentView(R.layout.activity_main);
         initVariables();
         userornot();
-
-
         setOnClickListener();
     }
 
@@ -77,20 +63,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         firebaseAuth = FirebaseAuth.getInstance();
 
-        TextView tvMytasks = findViewById(R.id.tvMyTasks);
-        imglogout = findViewById(R.id.iglogout);
-        fab = findViewById(R.id.floataddmain);
-        btnUpdate =findViewById(R.id.btnmainupdate);
-        popupmenu=findViewById(R.id.popup_order);
-        recyclerView = findViewById(R.id.recyclerview);
 
-        cardView = findViewById(R.id.cardview);
+        ivLogout = findViewById(R.id.ivLogout);
+        fbtnAddMainTask = findViewById(R.id.fabAddMainTask);
+
+        ivMenuOrder =findViewById(R.id.ivMenuSortOrder);
+        rvShowMainTask = findViewById(R.id.rvShowTasks);
+
+
         taskListAdapter = new TaskListAdapter(this, this);
-        recyclerView.setAdapter(taskListAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        rvShowMainTask.setAdapter(taskListAdapter);
+        rvShowMainTask.setLayoutManager(new LinearLayoutManager(this));
 
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        rvShowMainTask.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -100,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
 
                 if (dy < 0) {
-                    fab.show();
+                    fbtnAddMainTask.show();
                     // Recycle view scrolling up...
 
                 } else if (dy > 0) {
                     // Recycle view scrolling down...x
-                    fab.show();
+                    fbtnAddMainTask.show();
                 }
             }
         });
@@ -117,11 +103,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * for show task when Mainactivity is launch
+     * for LiveData Observer  when MainActivity is launch
      */
     private void getallnoteObserver() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        subTaskViewMOdel=ViewModelProviders.of(this).get(SubTaskViewMOdel.class);
+
 
         viewModel.getAllNotes().observe(this, new Observer<List<Task>>() {
 
@@ -226,9 +212,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * for  login on click of button
      */
     private void setOnClickListener() {
-        imglogout.setOnClickListener(this);
-        fab.setOnClickListener(this);
-        popupmenu.setOnClickListener(this);
+        ivLogout.setOnClickListener(this);
+        fbtnAddMainTask.setOnClickListener(this);
+        ivMenuOrder.setOnClickListener(this);
 
 
 
@@ -238,15 +224,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.iglogout:
+            case R.id.ivLogout:
                 logoutAlertDialog();
                 break;
 
-            case R.id.floataddmain:
+            case R.id.fabAddMainTask:
                 navigateToAddMainTask();
                 break;
 
-            case R.id.popup_order:
+            case R.id.ivMenuSortOrder:
                 showPopupMenu();
                 break;
 
@@ -260,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void showPopupMenu() {
 
-        PopupMenu popup = new PopupMenu(MainActivity.this, popupmenu);
+        PopupMenu popup = new PopupMenu(MainActivity.this, ivMenuOrder);
         //Inflating the Popup using xml file
         popup.getMenuInflater().inflate(R.menu.popup_sort__menu, popup.getMenu());
 
@@ -356,7 +342,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void exitAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
         alertDialog.setTitle(R.string.confirm_exit);
-        alertDialog.setMessage(R.string.are_you_sure_want_to_exit_messeage);
+        alertDialog.setMessage(R.string.are_you_sure_want_to_exit_message);
         alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
@@ -387,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onChanged(List<Task> tasks) {
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
-                        itemTouchHelper.attachToRecyclerView(recyclerView);
+                        itemTouchHelper.attachToRecyclerView(rvShowMainTask);
                         taskListAdapter.setNotes(tasks);
                     }
                 });
@@ -399,7 +385,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     public void onChanged(final List<Task> tasks) {
 
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-                        itemTouchHelper.attachToRecyclerView(recyclerView);
+                        itemTouchHelper.attachToRecyclerView(rvShowMainTask);
                         taskListAdapter.setNotes(tasks);
 
                     }

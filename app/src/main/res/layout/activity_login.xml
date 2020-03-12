@@ -6,7 +6,7 @@
 
 
     <TextView
-        android:id="@+id/login"
+        android:id="@+id/tvLogin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -19,7 +19,7 @@
 
 
     <LinearLayout
-        android:id="@+id/lin_login"
+        android:id="@+id/llLoginLinear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
@@ -33,7 +33,7 @@
 
 
         <TextView
-            android:id="@+id/txlEmail"
+            android:id="@+id/tvEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
@@ -46,7 +46,7 @@
              />
 
         <EditText
-            android:id="@+id/ledemail"
+            android:id="@+id/edEmail"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="25dp"
@@ -61,7 +61,7 @@
             android:padding="10dp" />
 
         <TextView
-            android:id="@+id/ltxpasword"
+            android:id="@+id/tvPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/edemail"
@@ -74,7 +74,7 @@
             android:textSize="16sp"/>
 
         <EditText
-            android:id="@+id/lpassword"
+            android:id="@+id/edPassword"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginStart="25dp"
@@ -102,10 +102,10 @@
     </LinearLayout>
 
     <TextView
-        android:id="@+id/not_account"
+        android:id="@+id/tvNotAccountMsg"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/lin_login"
+        android:layout_below="@id/llLoginLinear"
         android:layout_marginStart="55dp"
         android:layout_marginTop="20dp"
         android:fontFamily="@style/FontOpenSans"

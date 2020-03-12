@@ -10,13 +10,12 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
+import android.util.Patterns;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -25,25 +24,19 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
-    Boolean EditTextEmptyCheck;
-    ProgressDialog progressDialog;
-    EditText edEmail, edPassword, edcnpassword;
-    Button btnSigin;
-    TextView signin;
-    String EMAIL_PATTERN = "^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
+    private ProgressDialog pbRegisterDialog;
+    private EditText edEmail, edPassword, edCnfmPassword;
+    private Button btnSigIn;
+    private TextView tvSignIn;
     private FirebaseAuth firebaseAuth;
-    private String memail, mpass, mcnfpass;
+    private String mEmail;
+    private String mPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE); //will hide the title
-        Objects.requireNonNull(getSupportActionBar()).hide();
+
         setContentView(R.layout.activity_register);
 
         initialize();
@@ -57,7 +50,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      */
     private void clickableTextview() {
 
-        String mLoginText = "already have an account? SIGN IN";
+        String mLoginText = getString(R.string.already_account_message);
         SpannableString ss = new SpannableString(mLoginText);
         ClickableSpan clickableSpanSignin = new ClickableSpan() {
             @Override
@@ -73,8 +66,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }
         };
         ss.setSpan(clickableSpanSignin, 24, 32, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        signin.setText(ss);
-        signin.setMovementMethod(LinkMovementMethod.getInstance());
+        tvSignIn.setText(ss);
+        tvSignIn.setMovementMethod(LinkMovementMethod.getInstance());
     }
 
 
@@ -82,11 +75,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * for Initialize Variable
      */
     private void initialize() {
-        signin = findViewById(R.id.already_account);
-        edEmail = findViewById(R.id.edemail);
-        edPassword = findViewById(R.id.edpassword);
-        edcnpassword = findViewById(R.id.confmpassword);
-        btnSigin = findViewById(R.id.btnSignup);
+        tvSignIn = findViewById(R.id.tvAlreadyAccountMessage);
+        edEmail = findViewById(R.id.edEmail);
+        edPassword = findViewById(R.id.edPassword);
+        edCnfmPassword = findViewById(R.id.edCnfmPassword);
+        btnSigIn = findViewById(R.id.btnSignUp);
 
         firebaseAuth = FirebaseAuth.getInstance();
         if (firebaseAuth.getCurrentUser() != null) {
@@ -95,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             navigateToMainScreen();
         }
 
-        progressDialog = new ProgressDialog(RegisterActivity.this);
+        pbRegisterDialog = new ProgressDialog(RegisterActivity.this);
 
     }
 
@@ -108,7 +101,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
     private void setOnClickListener() {
-        btnSigin.setOnClickListener(this);
+        btnSigIn.setOnClickListener(this);
     }
 
     @Override
@@ -135,12 +128,12 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      */
     private void registeruser() {
 
-        CheckEditTextIsEmptyOrNot();
-        if (EditTextEmptyCheck) {
-            progressDialog.setMessage("Please Wait, We are Registering Your Data on Server");
-            progressDialog.show();
 
-            firebaseAuth.createUserWithEmailAndPassword(memail, mpass)
+        if (CheckEditTextIsEmptyOrNot()) {
+            pbRegisterDialog.setMessage("Please Wait, We are Registering Your Data on Server");
+            pbRegisterDialog.show();
+
+            firebaseAuth.createUserWithEmailAndPassword(mEmail, mPassword)
                     .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
@@ -155,7 +148,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                             } else {
                                 Toast.makeText(getApplicationContext(), R.string.valid_email, Toast.LENGTH_SHORT).show();
                             }
-                            progressDialog.dismiss();
+                            pbRegisterDialog.dismiss();
 
                         }
                     });
@@ -166,43 +159,34 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * For Checking Validation of TextBox
      */
-    public void CheckEditTextIsEmptyOrNot() {
+    public Boolean CheckEditTextIsEmptyOrNot() {
 
-        memail = edEmail.getText().toString().trim();
-        mpass = edPassword.getText().toString().trim();
-        mcnfpass = edcnpassword.getText().toString().trim();
+        mEmail = edEmail.getText().toString().trim();
+        mPassword = edPassword.getText().toString().trim();
+        String mCnfmPassword = edCnfmPassword.getText().toString().trim();
 
 
-        if (TextUtils.isEmpty(memail) && TextUtils.isEmpty(mpass) && TextUtils.isEmpty(mcnfpass)) {
-            EditTextEmptyCheck = false;
+        if (TextUtils.isEmpty(mEmail) && TextUtils.isEmpty(mPassword) && TextUtils.isEmpty(mCnfmPassword)) {
             Toast.makeText(getApplicationContext(), R.string.enter_field, Toast.LENGTH_SHORT).show();
-        }
-        else if (TextUtils.isEmpty(memail)) {
-            EditTextEmptyCheck = false;
+            return false;
+        } else if (TextUtils.isEmpty(mEmail)) {
             Toast.makeText(getApplicationContext(), R.string.enter_email, Toast.LENGTH_SHORT).show();
-        }
-        else if (!isValidEmail(memail)) {
-            EditTextEmptyCheck = false;
+            return false;
+        } else if (!isValidEmail(mEmail)) {
             Toast.makeText(getApplicationContext(), R.string.proper_email, Toast.LENGTH_SHORT).show();
-        }
-
-        else if (TextUtils.isEmpty(mpass)) {
-            EditTextEmptyCheck = false;
+            return false;
+        } else if (TextUtils.isEmpty(mPassword)) {
             Toast.makeText(getApplicationContext(), R.string.enter_password, Toast.LENGTH_SHORT).show();
-        }
-        else if (mpass.length() < 8 || mpass.length() > 16) {
-            EditTextEmptyCheck = false;
+            return false;
+        } else if (mPassword.length() < 8 || mPassword.length() > 16) {
             Toast.makeText(getApplicationContext(), R.string.password_range, Toast.LENGTH_SHORT).show();
+            return false;
+        } else if (!mPassword.equals(mCnfmPassword)) {
+            Toast.makeText(getApplicationContext(), R.string.passwordNotMatch, Toast.LENGTH_SHORT).show();
+            return false;
         }
-        else if (!mpass.equals(mcnfpass)) {
-            EditTextEmptyCheck = false;
-            Toast.makeText(getApplicationContext(), R.string.passwordnotmatch, Toast.LENGTH_SHORT).show();
-        }
-        else {
-            EditTextEmptyCheck = true;
-        }
-        // if(password.getText().toString().equals(confirmpassword.getText().toString()))
 
+        return true;
     }
 
 
@@ -218,12 +202,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * For Email Validation Function
      */
-    private boolean isValidEmail(String memail) {
-
-
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(memail);
-        return matcher.matches();
+    private boolean isValidEmail(String mEmail) {
+        return (!TextUtils.isEmpty(mEmail) && Patterns.EMAIL_ADDRESS.matcher(mEmail).matches());
     }
 
 }

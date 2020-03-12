@@ -5,10 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    tools:context=".MainActivity"
     android:background="@drawable/background">
 
     <RelativeLayout
-        android:id="@+id/linearmaintasks"
+        android:id="@+id/rlMainTaskToolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
@@ -17,29 +18,27 @@
             android:id="@+id/tvMyTasks"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_marginStart="30dp"
             android:layout_marginTop="30dp"
-            android:layout_alignParentLeft="true"
             android:fontFamily="@style/FontOpenSans"
             android:text="@string/my_tasks"
             android:textColor="@color/white"
-            android:textSize="@dimen/textsize"
+            android:textSize="@dimen/textSize"
             android:textStyle="bold"
-            tools:ignore="RtlHardcoded" />
+            />
 
         <ImageView
 
-            android:id="@+id/iglogout"
+            android:id="@+id/ivLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
-            android:layout_toLeftOf="@id/popup_order"
+            android:layout_toLeftOf="@id/ivMenuSortOrder"
             android:layout_marginEnd="10dp"
             android:src="@drawable/ic_power_settings_new_24px" />
 
         <ImageView
-            android:id="@+id/popup_order"
+            android:id="@+id/ivMenuSortOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -52,34 +51,36 @@
 
 
     <LinearLayout
-        android:id="@+id/lmain_task"
+        android:id="@+id/llShowRecycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearmaintasks"
+        android:layout_below="@id/rlMainTaskToolbar"
         android:layout_marginTop="20dp"
         android:background="@drawable/task_border"
         android:focusable="true"
-        android:focusableInTouchMode="true"
+
         android:fontFamily="@style/FontOpenSans"
         android:orientation="vertical">
 
-        <include
-            layout="@layout/content_basic" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvShowTasks"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/darker_gray" />
+
 
     </LinearLayout>
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floataddmain"
+        android:id="@+id/fabAddMainTask"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/lmain_task"
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
+        android:background="@color/white"
         android:src="@drawable/ic_add"
-        app:backgroundTint="@null"
-        app:fabSize="normal"
-        app:layout_anchorGravity="bottom|center" />
+        app:backgroundTint="@null" />
 
 </RelativeLayout>

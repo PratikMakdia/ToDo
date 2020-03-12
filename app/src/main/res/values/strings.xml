@@ -32,7 +32,6 @@
     <string name="add_image">Add image</string>
     <string name="sub_tasks">Sub Tasks</string>
     <string name="done">Done</string>
-    <string name="email_pattern">^[_A-Za-z0-9-\\+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$</string>
     <string name="title_activity_basic">BasicActivity</string>
     <string name="new_note">Add Note</string>
     <string name="hint_title">Enter_Title</string>
@@ -47,16 +46,18 @@
     <string name="update">Update</string>
     <string name="updated">Updated</string>
     <string name="cancel">Cancel</string>
-    <string name="passwordnotmatch">Password Does Not Match</string>
-    <string name="add_subtasks">Add Subtasks</string>
+    <string name="passwordNotMatch">Password Does Not Match</string>
+    <string name="addSubTasks">Add Subtasks</string>
     <string name="by_date">By Date</string>
     <string name="my_order">My Order</string>
     <string name="confirm_exit">Confirm Exit ???</string>
-    <string name="are_you_sure_want_to_exit_messeage">Are you sure you want to Exit ?</string>
+    <string name="are_you_sure_want_to_exit_message">Are you sure you want to Exit ?</string>
     <string name="yes">YES</string>
     <string name="no">NO</string>
-    <string name="confirm_logout">Confirm Logout...</string>
+    <string name="confirm_logout">Confirm Logout…</string>
     <string name="logout_message">Are you sure you want Logout?</string>
+    <string name="dont_account_message">don\'t have an account? SIGN UP</string>
+    <string name="already_account_message">already have an account? SIGN IN</string>
 
 
 </resources>

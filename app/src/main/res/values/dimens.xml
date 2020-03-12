@@ -6,7 +6,7 @@
         tools:override="true">56dp</dimen>
 
     <dimen name="text_padding">0dp</dimen>
-    <dimen name="padding_textbox">18sp</dimen>
+    <dimen name="paddingTextBox">18sp</dimen>
 
-    <dimen name="textsize">18sp</dimen>
+    <dimen name="textSize">18sp</dimen>
 </resources>

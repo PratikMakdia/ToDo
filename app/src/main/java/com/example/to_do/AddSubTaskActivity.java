@@ -68,13 +68,13 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
      */
     private void initialize() {
         subTaskViewMOdel = new SubTaskViewMOdel((Application) getApplicationContext());
-        edSubTitle = findViewById(R.id.show_sub_title);
-        edSubDesc = findViewById(R.id.sub_details);
-        edSubDateTime = findViewById(R.id.sub_date_time);
-        btnSubAdd = findViewById(R.id.btnsubadd);
-        tvSubImage =findViewById(R.id.sub_tvimage);
-        ivSubImage =findViewById(R.id.sub_imageview);
-        btnSubUpdate =findViewById(R.id.btnsubupdate);
+        edSubTitle = findViewById(R.id.tvShowSubTask);
+        edSubDesc = findViewById(R.id.tvSubTaskDetails);
+        edSubDateTime = findViewById(R.id.tvSubTaskDateTime);
+        btnSubAdd = findViewById(R.id.btnSubAdd);
+        tvSubImage =findViewById(R.id.tvShowSubImagePath);
+        ivSubImage =findViewById(R.id.ivSubImageView);
+        btnSubUpdate =findViewById(R.id.btnSubUpdate);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -120,19 +120,19 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
         switch (v.getId()) {
 
-            case R.id.sub_tvimage:
+            case R.id.tvShowSubImagePath:
                 uploadSubTaskImageInRoomDatabse();
                 break;
 
-            case R.id.sub_date_time:
+            case R.id.tvSubTaskDateTime:
                 showDateAndTimePicker();
                 break;
 
-            case R.id.btnsubadd:
+            case R.id.btnSubAdd:
                 addSubTaskDataintoRoomDatabase();
                 break;
 
-            case R.id.btnsubupdate:
+            case R.id.btnSubUpdate:
                 updateSubTaskDataIntoRoomDatabase();
                 break;
 

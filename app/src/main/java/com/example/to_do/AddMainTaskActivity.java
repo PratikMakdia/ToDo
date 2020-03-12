@@ -97,15 +97,15 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
      * for Initialize Variable
      */
     private void initialize() {
-        edAdd = findViewById(R.id.show_title);
-        edDesc = findViewById(R.id.details);
-        edDateTime = findViewById(R.id.date_time);
-        btnAdd = findViewById(R.id.btnmainadd);
-        tvImage = findViewById(R.id.image);
-        tvAddSubTask = findViewById(R.id.txaddsubtask);
-        btnUpdate = findViewById(R.id.btnmainupdate);
-        ivGalleryImage = findViewById(R.id.gallery_imageview);
-        tvShowSubTask = findViewById(R.id.showsubtask);
+        edAdd = findViewById(R.id.edMainTask);
+        edDesc = findViewById(R.id.edDetails);
+        edDateTime = findViewById(R.id.edDateTime);
+        btnAdd = findViewById(R.id.btnMainTaskAdd);
+        tvImage = findViewById(R.id.tvPath);
+        tvAddSubTask = findViewById(R.id.tvAddSubTasks);
+        btnUpdate = findViewById(R.id.btnMainTaskUpdate);
+        ivGalleryImage = findViewById(R.id.ivShowImage);
+        tvShowSubTask = findViewById(R.id.tvShowSubTask);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -172,21 +172,21 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
         switch (v.getId()) {
 
-            case R.id.image:
+            case R.id.tvPath:
                 uploadImage();
                 break;
 
-            case R.id.date_time:
+            case R.id.edDateTime:
                 showDateAndTimePicker();
                 break;
-            case R.id.txaddsubtask:
+            case R.id.tvAddSubTasks:
                 AddDataIntoRoomDatabase();
                 navigateToSubTaskScreen();
                 break;
-            case R.id.btnmainadd:
+            case R.id.btnMainTaskAdd:
                 AddDataIntoRoomDatabase();
                 break;
-            case R.id.btnmainupdate:
+            case R.id.btnMainTaskUpdate:
                 updateDataIntoRomDatabse();
                 break;
 
@@ -268,6 +268,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             } else if (TextUtils.isEmpty(time) || TextUtils.isEmpty(path)) {
                 task = new Task(note, desc);
                 viewModel.insert(task);
+
             } else if( TextUtils.isEmpty(path))
 
             {
@@ -422,7 +423,9 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             if (cursor != null) {
                 cursor.moveToFirst();
             }
-            return cursor.getString(column_index);
+            if (cursor != null) {}
+                return cursor.getString(column_index);
+
         } finally {
             if (cursor != null) {
                 cursor.close();
