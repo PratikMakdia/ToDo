@@ -1,10 +1,12 @@
 package com.example.to_do;
 
-import android.annotation.SuppressLint;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -17,13 +19,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.Database.SubTask;
 import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
 import com.example.to_do.Database.TaskListAdapter;
@@ -38,20 +40,18 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, TaskListAdapter.OnDeleteClickListener, PopupMenu.OnMenuItemClickListener {
 
 
-    public static final int UPDATE_NOTE_ACTIVITY_REQUEST_CODE = 2;
-    private static final int NEW_ACTIVITY_REQUEST_CODE = 1;
+
     FirebaseAuth firebaseAuth;
     private ImageView popupmenu;
 
-    TextView txnote, txmytasks;
-    RecyclerView recyclerView;
-    Button btnupdate;
+    private TextView txnote;
+    private RecyclerView recyclerView;
+    private  Button btnUpdate;
 
     private SubTaskViewMOdel subTaskViewMOdel;
 
     private ViewModel viewModel;
     private TaskListAdapter taskListAdapter;
-
     private ImageView imglogout;
     private FloatingActionButton fab;
     private CardView cardView;
@@ -72,15 +72,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * for initialize variable
      */
-    @SuppressLint("SetTextI18n")
+
     public void initVariables() {
 
         firebaseAuth = FirebaseAuth.getInstance();
-        /*txnote = findViewById(R.id.txvNote);*/
-        txmytasks = findViewById(R.id.my_tasks);
+
+        TextView tvMytasks = findViewById(R.id.tvMyTasks);
         imglogout = findViewById(R.id.iglogout);
         fab = findViewById(R.id.floataddmain);
-        btnupdate=findViewById(R.id.btnmainupdate);
+        btnUpdate =findViewById(R.id.btnmainupdate);
         popupmenu=findViewById(R.id.popup_order);
         recyclerView = findViewById(R.id.recyclerview);
 
@@ -112,14 +112,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
             getallnoteObserver();
-   /*     subTaskViewMOdel.getmAllsubNote().observe(this, new Observer<List<SubTask>>() {
-            @Override
-            public void onChanged(List<SubTask> subTasks) {
 
-                subTaskListAdapter.setSubNotes(subTasks);
-            }
-        });*/
-        /*    */
 
     }
 
@@ -163,21 +156,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }
     };
-   /* ItemTouchHelper.SimpleCallback callback=new ItemTouchHelper.SimpleCallback(0, 0) {
 
-        @Override
-        public boolean isLongPressDragEnabled() {
-            return false;
-        }
-        @Override
-        public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-
-            return false;
-        }
-        @Override
-        public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-        }
-    };*/
    final  ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(ItemTouchHelper.UP | ItemTouchHelper.DOWN |ItemTouchHelper.START|ItemTouchHelper.END, 0) {
 
         @Override
@@ -200,8 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             Objects.requireNonNull(recyclerView.getAdapter()).notifyItemMoved(startposition, endposition);
 
-/*
-            Task task;
+           /* Task task;
             task= new Task(endposition);
             viewModel.insert(task);*/
             String abc= String.valueOf(startposition);
@@ -219,7 +197,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
 
+        return super.onTouchEvent(event);
+
+    }
 
     /**
      * for check firebase user Login  or not
@@ -256,7 +239,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iglogout:
-                logalertdialog();
+                logoutAlertDialog();
                 break;
 
             case R.id.floataddmain:
@@ -294,22 +277,41 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void navigateToAddMainTask() {
 
+        if(ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+        {
+            Intent i = new Intent(MainActivity.this, AddMainTaskActivity.class);
+            startActivity(i);
+        }
 
-        Intent i = new Intent(MainActivity.this, AddMainTaskActivity.class);
-        startActivityForResult(i, NEW_ACTIVITY_REQUEST_CODE)
-        ;
+
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        int STORAGE_PERMISSION_CODE = 1;
+        if(requestCode== STORAGE_PERMISSION_CODE){
+            if(grantResults.length>0&&grantResults[0]==PackageManager.PERMISSION_GRANTED)
+            {
+                Toast.makeText(getApplicationContext(),"Permission Granted",Toast.LENGTH_SHORT).show();
+            }
+            else
+
+            {
+
+                Toast.makeText(getApplicationContext(),"Permission Denied",Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
+
+
     @Override
-    public void OnDeleteClickListener(Task myTask) {
+    public void onDeleteClickListener(Task myTask) {
         viewModel.delete(myTask);
-
-    }
-
-    @Override
-    public void OnDeleteClickListener(SubTask subTask) {
-        subTaskViewMOdel.delete(subTask);
 
     }
 
@@ -318,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * from user back pressed
      */
     public void onBackPressed() {
-        exitDialog();
+        exitAlertDialog();
 
     }
 
@@ -326,11 +328,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * For Logout Alert Dialog
      */
-    private void logalertdialog() {
+    private void logoutAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle("Confirm Logout...");
-        alertDialog.setMessage("Are you sure you want Logout?");
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(R.string.confirm_logout);
+        alertDialog.setMessage(R.string.logout_message);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 firebaseAuth.signOut();
                 finish();
@@ -339,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }
@@ -348,11 +350,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         alertDialog.show();
     }
 
-    private void exitDialog() {
+    /**
+     * For Exit alert Dialog Box
+     */
+    private void exitAlertDialog() {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(MainActivity.this);
-        alertDialog.setTitle("Confirm Exit ???");
-        alertDialog.setMessage("Are you sure you want to Exit ?");
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        alertDialog.setTitle(R.string.confirm_exit);
+        alertDialog.setMessage(R.string.are_you_sure_want_to_exit_messeage);
+        alertDialog.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
 
                 finish();
@@ -361,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+        alertDialog.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 dialog.cancel();
             }

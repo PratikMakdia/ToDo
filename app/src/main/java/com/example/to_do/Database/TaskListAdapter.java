@@ -18,7 +18,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.AddMainTaskActivity;
-import com.example.to_do.MainActivity;
 import com.example.to_do.R;
 
 import java.util.Collection;
@@ -28,8 +27,8 @@ import java.util.ListIterator;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskViewHolder> implements List<Object> {
 
-    private List<Task> mtaskes;
-    private List<SubTask> msubtaskes;
+    private List<Task> mTaskes;
+
     private LayoutInflater layoutInflater;
     private Context mcontext;
     private OnDeleteClickListener onDeleteClickListener;
@@ -46,24 +45,23 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View itemview = layoutInflater.inflate(R.layout.list_item, parent, false);
-        TaskViewHolder taskholder = new TaskViewHolder(itemview);
+        View itemView = layoutInflater.inflate(R.layout.list_item, parent, false);
 
-        return taskholder;
+        return new TaskViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
 
 
-        if (mtaskes != null) {
-            Task task = mtaskes.get(position);
+        if (mTaskes != null) {
+            Task task = mTaskes.get(position);
             holder.setData(task.getName(), position);
             holder.setListners();
 
         } else {
             // Covers the case of data not being ready yet.
-            holder.TaskItemView.setText(R.string.no_note);
+            holder.taskItemView.setText(R.string.no_note);
         }
 
 
@@ -95,14 +93,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     @Override
     public int getItemCount() {
-        if (mtaskes != null)
-            return mtaskes.size();
+        if (mTaskes != null)
+            return mTaskes.size();
 
         return 0;
     }
 
     public void setNotes(List<Task> tasks) {
-        mtaskes = tasks;
+        mTaskes = tasks;
         notifyDataSetChanged();
     }
 
@@ -216,6 +214,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         return null;
     }
 
+
     @NonNull
     @Override
     public ListIterator<Object> listIterator(int index) {
@@ -229,71 +228,56 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     }
 
     public interface OnDeleteClickListener {
-        void OnDeleteClickListener(Task myTask);
+        void onDeleteClickListener(Task myTask);
 
-        void OnDeleteClickListener(SubTask subTask);
+
     }
 
     public class TaskViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
 
-        private TextView TaskItemView,SubTaskItemVIew;
-        private ImageView imgDelete, subimgdelete;
+        private TextView taskItemView;
+        private ImageView imgDelete;
         private int mPosition;
-        private CheckBox notecheck;
-        private int msubPosition;
+        private CheckBox chkMainTask;
 
-        private RecyclerView recyclerView;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
 
-            notecheck=itemView.findViewById(R.id.maintaskCheck);
+            chkMainTask =itemView.findViewById(R.id.chkMainTask);
 //            TaskItemView = itemView.findViewById(R.id.txvNote);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
-            recyclerView=itemView.findViewById(R.id.recyclerview);
             cardView = itemView.findViewById(R.id.cardview);
-           /* subcardVIew=itemView.findViewById(R.id.subcardview);
-            subimgdelete=itemView.findViewById(R.id.subivRowDelete);
-            SubTaskItemVIew=itemView.findViewById(R.id.subtxNote);*/
+
         }
 
-        public void setData(String note, int position) {
-            notecheck.setText(note);
+        private void setData(String note, int position) {
+            chkMainTask.setText(note);
             //TaskItemView.setText(note);
             mPosition = position;
 
-            notecheck.setOnCheckedChangeListener(this);
+            chkMainTask.setOnCheckedChangeListener(this);
         }
 
-      /*  public void setSubData(String note, int position) {
-            SubTaskItemVIew.setText(note);
-            msubPosition = position;
-        }*/
-
-
-        public void setListners() {
 
 
 
+        private void setListners() {
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
-                    intent.putExtra("note_id", mtaskes.get(mPosition).getId());
-                   /* intent.putExtra("sub_note_id", msubtaskes.get(msubPosition).getId());*/
-                    ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
+                    intent.putExtra("note_id", mTaskes.get(mPosition).getId());
+
+                    ((Activity) mcontext).startActivity(intent);
                 }
             });
 
-           /* subcardVIew.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mcontext, AddSubTaskActivity.class);
-                    intent.putExtra("note_id", msubtaskes.get(msubPosition).getId());
-                    ((Activity) mcontext).startActivityForResult(intent, MainActivity.UPDATE_NOTE_ACTIVITY_REQUEST_CODE);
-                }
-            });*/
+
+
+
+
 
 
 
@@ -302,7 +286,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 @Override
                 public void onClick(View v) {
                     if (onDeleteClickListener != null) {
-                        onDeleteClickListener.OnDeleteClickListener(mtaskes.get(mPosition));
+                        onDeleteClickListener.onDeleteClickListener(mTaskes.get(mPosition));
                     }
                 }
             });
@@ -321,12 +305,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if(isChecked)
             {
-                notecheck.setPaintFlags(notecheck.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
-                
+                chkMainTask.setPaintFlags(chkMainTask.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+
             }
             else
             {
-                notecheck.setPaintFlags(0);
+                chkMainTask.setPaintFlags(0);
+
             }
         }
     }

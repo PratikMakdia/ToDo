@@ -51,6 +51,12 @@
     <string name="add_subtasks">Add Subtasks</string>
     <string name="by_date">By Date</string>
     <string name="my_order">My Order</string>
+    <string name="confirm_exit">Confirm Exit ???</string>
+    <string name="are_you_sure_want_to_exit_messeage">Are you sure you want to Exit ?</string>
+    <string name="yes">YES</string>
+    <string name="no">NO</string>
+    <string name="confirm_logout">Confirm Logout...</string>
+    <string name="logout_message">Are you sure you want Logout?</string>
 
 
 </resources>

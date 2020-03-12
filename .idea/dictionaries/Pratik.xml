@@ -9,8 +9,11 @@
       <w>edsubdatettime</w>
       <w>edsubdesc</w>
       <w>edsubtitle</w>
+      <w>itemview</w>
       <w>mcontext</w>
       <w>msubcontext</w>
+      <w>reciever</w>
+      <w>taskes</w>
     </words>
   </dictionary>
 </component>

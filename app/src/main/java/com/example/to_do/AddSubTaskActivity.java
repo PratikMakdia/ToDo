@@ -1,7 +1,10 @@
 package com.example.to_do;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Application;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +18,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -37,29 +38,25 @@ import com.example.to_do.Database.ViewModel;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
-import java.util.Objects;
+import java.util.Date;
+import java.util.Random;
 
 public class AddSubTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-    public EditText edsubtitle, edsubdesc, edsubdatettime;
-    Button btnsubadd,btnsubupdate;
+    private EditText edSubTitle, edSubDesc, edSubDateTime;
+    private Button btnSubAdd, btnSubUpdate;
     private SubTaskViewMOdel subTaskViewMOdel;
-    private TextView tvsubimage;
-    private ImageView imgsubimage;
-    private ViewModel viewModel;
-    private final int select_photo = 1;
-    int noteId;
+    private TextView tvSubImage;
+    private ImageView ivSubImage;
+    private int select_photo = 1;
+    private int noteId;
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_addsubtask);
-
         initialize();
         setOnClickListener();
     }
@@ -71,19 +68,13 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
      */
     private void initialize() {
         subTaskViewMOdel = new SubTaskViewMOdel((Application) getApplicationContext());
-        edsubtitle = findViewById(R.id.show_sub_title);
-        edsubdesc = findViewById(R.id.sub_details);
-        edsubdatettime = findViewById(R.id.sub_date_time);
-        btnsubadd = findViewById(R.id.btnsubadd);
-        tvsubimage=findViewById(R.id.sub_tvimage);
-        imgsubimage=(ImageView)findViewById(R.id.sub_imageview);
-        btnsubupdate=findViewById(R.id.btnsubupdate);
-     /*   Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            noteId = bundle.getInt("note_id");
-        }
-        LiveData<Task> note = SubTaskViewMOdel.getNote(noteId);*/
-
+        edSubTitle = findViewById(R.id.show_sub_title);
+        edSubDesc = findViewById(R.id.sub_details);
+        edSubDateTime = findViewById(R.id.sub_date_time);
+        btnSubAdd = findViewById(R.id.btnsubadd);
+        tvSubImage =findViewById(R.id.sub_tvimage);
+        ivSubImage =findViewById(R.id.sub_imageview);
+        btnSubUpdate =findViewById(R.id.btnsubupdate);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -92,31 +83,21 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
         }
 
-        viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        /* fab = findViewById(R.id.fab);*/
+        ViewModel viewModel = ViewModelProviders.of(this).get(ViewModel.class);
         LiveData<SubTask> note = viewModel.getsubNote(noteId);
         note.observe(this, new Observer<SubTask>() {
             @Override
             public void onChanged(@Nullable SubTask subTask) {
                 if (subTask != null) {
-                    edsubtitle.setText(subTask.getSub_name());
-                    edsubdesc.setText(subTask.getSub_description());
-                    edsubdatettime.setText(subTask.getSub_date_time());
-                    tvsubimage.setText(subTask.getSub_img_path());
-                    btnsubupdate.setVisibility(View.VISIBLE);
-                    btnsubadd.setVisibility(View.GONE);
-                    imgsubimage.setImageBitmap(BitmapFactory.decodeFile(subTask.getSub_img_path()));
+                    edSubTitle.setText(subTask.getSub_name());
+                    edSubDesc.setText(subTask.getSub_description());
+                    edSubDateTime.setText(subTask.getSub_date_time());
+                    tvSubImage.setText(subTask.getSub_img_path());
+                    btnSubUpdate.setVisibility(View.VISIBLE);
+                    btnSubAdd.setVisibility(View.GONE);
+                    ivSubImage.setImageBitmap(BitmapFactory.decodeFile(subTask.getSub_img_path()));
                     Drawable d = Drawable.createFromPath(subTask.getSub_img_path());
-                    imgsubimage.setImageDrawable(d);
-                   /* File imgFile = new  File(tvimage.getText().toString());
-
-                    if(imgFile.exists()){
-
-                        Bitmap myBitmap = BitmapFactory.decodeFile(imgFile.getPath());
-                        gallery_image.setImageBitmap(myBitmap);
-
-                    }*/
-                    /* imgDelete.setVisibility(View.VISIBLE);*/
+                    ivSubImage.setImageDrawable(d);
                 }
             }
         });
@@ -127,10 +108,10 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
     private void setOnClickListener() {
-        edsubdatettime.setOnClickListener(this);
-        btnsubadd.setOnClickListener(this);
-        tvsubimage.setOnClickListener(this);
-        btnsubupdate.setOnClickListener(this);
+        edSubDateTime.setOnClickListener(this);
+        btnSubAdd.setOnClickListener(this);
+        tvSubImage.setOnClickListener(this);
+        btnSubUpdate.setOnClickListener(this);
     }
 
 
@@ -140,36 +121,36 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         switch (v.getId()) {
 
             case R.id.sub_tvimage:
-                uploadSubImage();
+                uploadSubTaskImageInRoomDatabse();
                 break;
 
             case R.id.sub_date_time:
-                showDateTime();
+                showDateAndTimePicker();
                 break;
 
             case R.id.btnsubadd:
-                addSubData();
+                addSubTaskDataintoRoomDatabase();
                 break;
 
             case R.id.btnsubupdate:
-                updatesubdata();
+                updateSubTaskDataIntoRoomDatabase();
                 break;
 
         }
 
     }
 
-    private void updatesubdata() {
+    private void updateSubTaskDataIntoRoomDatabase() {
         Intent result = new Intent();
-        if (TextUtils.isEmpty(edsubtitle.getText())) {
+        if (TextUtils.isEmpty(edSubTitle.getText())) {
             setResult(RESULT_CANCELED, result);
         } else {
 
             SubTask subtask;
-            String updatetitle = edsubtitle.getText().toString();
-            String updatedesc = edsubdesc.getText().toString();
-            String updatedatetime = edsubdatettime.getText().toString();
-            String updatepath=tvsubimage.getText().toString();
+            String updatetitle = edSubTitle.getText().toString();
+            String updatedesc = edSubDesc.getText().toString();
+            String updatedatetime = edSubDateTime.getText().toString();
+            String updatepath= tvSubImage.getText().toString();
 
 
             subtask = new SubTask(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
@@ -181,7 +162,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void uploadSubImage() {
+    private void uploadSubTaskImageInRoomDatabse() {
         Intent in = new Intent(Intent.ACTION_PICK);
         in.setType("image/*");
         startActivityForResult(in, select_photo);
@@ -189,18 +170,18 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private void addSubData() {
+    private void addSubTaskDataintoRoomDatabase() {
         Intent resultintent = new Intent();
-        if (TextUtils.isEmpty(edsubtitle.getText()) || TextUtils.isEmpty(edsubdesc.getText()) || TextUtils.isEmpty(edsubdatettime.getText())) {
+        if (TextUtils.isEmpty(edSubTitle.getText()) || TextUtils.isEmpty(edSubDesc.getText()) || TextUtils.isEmpty(edSubDateTime.getText())) {
             setResult(RESULT_CANCELED, resultintent);
         } else {
 
             SubTask subTask;
 
-            String mnote = edsubtitle.getText().toString();
-            String mdesc = edsubdesc.getText().toString();
-            String mtime = edsubdatettime.getText().toString();
-            String msubpath=tvsubimage.getText().toString();
+            String mnote = edSubTitle.getText().toString();
+            String mdesc = edSubDesc.getText().toString();
+            String mtime = edSubDateTime.getText().toString();
+            String msubpath= tvSubImage.getText().toString();
 
 
 
@@ -213,7 +194,12 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
                 subTask = new SubTask(mnote,mdesc);
                 subTaskViewMOdel.insert(subTask);
             }
+            else if( TextUtils.isEmpty(msubpath))
 
+            {
+                subTask = new SubTask(mnote, mdesc,mtime);
+                subTaskViewMOdel.insert(subTask);
+            }
             else {
                 subTask = new SubTask(mnote, mdesc, mtime,msubpath);
                 subTaskViewMOdel.insert(subTask);
@@ -234,7 +220,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
     }
 
 
-    private void showDateTime() {
+    private void showDateAndTimePicker() {
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -244,6 +230,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         datePickerDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
@@ -252,59 +239,89 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         int minute = calendar.get(Calendar.MINUTE);
 
         TimePickerDialog timePickerDialog = new TimePickerDialog(AddSubTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
-        edsubdatettime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+        edSubDateTime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
         timePickerDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-        edsubdatettime.setText(edsubdatettime.getText() + " -" + hourOfDay + ":" + minute);
+        edSubDateTime.setText(edSubDateTime.getText() + " -" + hourOfDay + ":" + minute);
+
+        Intent subintent = new Intent(AddSubTaskActivity.this, SubTaskNotificationReciever.class);
+        subintent.putExtra("sub_notificationId", getUniqueNotificationId());
+        subintent.putExtra("sub_todo", edSubTitle.getText().toString());
+        PendingIntent subalarmIntent = PendingIntent.getBroadcast(AddSubTaskActivity.this, 0, subintent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager subalarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // Create time.
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        startTime.set(Calendar.MINUTE, minute);
+        startTime.set(Calendar.SECOND, 0);
+
+
+        long alarmStartTime = startTime.getTimeInMillis();
+        if (subalarm != null) {
+            subalarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, subalarmIntent);
+        }
 
     }
+    public int getUniqueNotificationId() {
+        int notificationId;
+        try {
+            notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Random random = new Random();
+            notificationId = random.nextInt(9999 - 1000) + 10;
+        }
+        return notificationId;
+    }
+
 
 
     protected void onActivityResult(int requestcode, int resultcode,
                                     Intent imagereturnintent) {
         super.onActivityResult(requestcode, resultcode, imagereturnintent);
-        switch (requestcode) {
-            case select_photo:
-                if (resultcode == RESULT_OK) {
-                    try {
+        if (requestcode == select_photo) {
+            if (resultcode == RESULT_OK) {
+                try {
 
-                        Uri imageuri = imagereturnintent.getData();// Get intent
-                        // data
-
-
-                        // Get real path and show over text view
-                        String real_Path = getRealPathFromUri(AddSubTaskActivity.this,
-                                imageuri);
-                        tvsubimage.setText(real_Path);
+                    Uri imageuri = imagereturnintent.getData();// Get intent
+                    // data
 
 
+                    // Get real path and show over text view
+                    String real_Path = getRealPathFromUri(AddSubTaskActivity.this,
+                            imageuri);
+                    tvSubImage.setText(real_Path);
 
-                        Bitmap bitmap = decodeUri(AddSubTaskActivity.this, imageuri, 300);// call
-                        // deocde
-                        // uri
-                        // method
-                        // Check if bitmap is not null then set image else show
-                        // toast
-                        if (bitmap != null)
-                            imgsubimage .setImageBitmap(bitmap);// Set image over
-                            // bitmap
 
-                        else
-                            Toast.makeText(AddSubTaskActivity.this,
-                                    "Error while decoding image.",
-                                    Toast.LENGTH_SHORT).show();
-                    } catch (FileNotFoundException e) {
+                    Bitmap bitmap = decodeUri(AddSubTaskActivity.this, imageuri, 300);// call
+                    // deocde
+                    // uri
+                    // method
+                    // Check if bitmap is not null then set image else show
+                    // toast
+                    if (bitmap != null)
+                        ivSubImage.setImageBitmap(bitmap);// Set image over
+                        // bitmap
 
-                        e.printStackTrace();
-                        Toast.makeText(AddSubTaskActivity.this, "File not found.",
+                    else
+                        Toast.makeText(AddSubTaskActivity.this,
+                                "Error while decoding image.",
                                 Toast.LENGTH_SHORT).show();
-                    }
+                } catch (FileNotFoundException e) {
+
+                    e.printStackTrace();
+                    Toast.makeText(AddSubTaskActivity.this, "File not found.",
+                            Toast.LENGTH_SHORT).show();
                 }
+            }
         }
     }
 
@@ -320,9 +337,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
         int scale = 1;
 
-        while (true) {
-            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
-                break;
+        while (width_tmp / 2 >= requiredSize && height_tmp / 2 >= requiredSize) {
             width_tmp /= 2;
             height_tmp /= 2;
             scale *= 2;
@@ -346,7 +361,9 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
                 column_index = cursor
                         .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             }
-            cursor.moveToFirst();
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
             return cursor.getString(column_index);
         } finally {
             if (cursor != null) {

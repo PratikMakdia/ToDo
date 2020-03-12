@@ -21,6 +21,7 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id=:noteId")
     LiveData<Task> getNote(int noteId);
 
+  
 
     @Query("SELECT id from tasks WHERE name=:taskname")
     int  GetId(String taskname);

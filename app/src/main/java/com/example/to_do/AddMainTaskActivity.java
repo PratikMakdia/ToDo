@@ -1,6 +1,9 @@
 package com.example.to_do;
 
+import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.DatePickerDialog;
+import android.app.PendingIntent;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,8 +19,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -32,64 +33,50 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.to_do.Database.SubTask;
-import com.example.to_do.Database.SubTaskViewMOdel;
 import com.example.to_do.Database.Task;
-import com.example.to_do.Database.TaskListAdapter;
 import com.example.to_do.Database.ViewModel;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
-import java.util.Objects;
+import java.util.Date;
+import java.util.Random;
 
-public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
+public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
-
-
-    private EditText edadd, eddesc, eddatetime;
-    private TextView tvimage,showsubtask;
-    private FloatingActionButton fab;
-    private Button btnadd, btnupdate;
+    private EditText edAdd, edDesc, edDateTime;
+    private TextView tvImage, tvShowSubTask, tvAddSubTask;
+    private Button btnAdd, btnUpdate;
     private ViewModel viewModel;
-    private TextView addsub;
-    private ImageView imgDelete;
-    private SubTaskViewMOdel subTaskViewMOdel;
-    private TaskListAdapter taskListAdapter;
-    private int noteId,subnoteId;
-
-    private static ImageView gallery_image;
-    private final int select_photo = 1;
+    private int noteId;
+    private ImageView ivGalleryImage;
+    private int select_photo = 1;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        Objects.requireNonNull(getSupportActionBar()).hide();
         setContentView(R.layout.activity_addmaintask);
 
         initialize();
-        edittextEmptyornot();
+        edittextEmptyOrNot();
         setOnClickListener();
 
     }
 
 
-    private void edittextEmptyornot() {
-        if (edadd.getText().toString().equals("")) {
-            addsub.setEnabled(false);
+    private void edittextEmptyOrNot() {
+        if (edAdd.getText().toString().equals("")) {
+            tvAddSubTask.setEnabled(false);
         }
-        edadd.addTextChangedListener(new TextWatcher() {
+        edAdd.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
-                if (edadd.getText().toString().equals("")) {
-                    addsub.setEnabled(false);
+                if (edAdd.getText().toString().equals("")) {
+                    tvAddSubTask.setEnabled(false);
                 } else {
-                    addsub.setEnabled(true);
+                    tvAddSubTask.setEnabled(true);
                 }
             }
 
@@ -101,13 +88,6 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
             @Override
             public void afterTextChanged(Editable s) {
-
-              /*  if(edadd.getText().toString().equals("")){
-                    fab.setEnabled(false);
-                } else {
-                    fab.setEnabled(true);
-                }*/
-
             }
         });
 
@@ -117,58 +97,43 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
      * for Initialize Variable
      */
     private void initialize() {
-        edadd = findViewById(R.id.show_title);
-        eddesc = findViewById(R.id.details);
-        eddatetime = findViewById(R.id.date_time);
-        btnadd = findViewById(R.id.btnmainadd);
-        tvimage=findViewById(R.id.image);
-        addsub = findViewById(R.id.txaddsubtask);
-        btnupdate = findViewById(R.id.btnmainupdate);
-        imgDelete = findViewById(R.id.ivRowDelete);
-        gallery_image = (ImageView) findViewById(R.id.gallery_imageview);
-        showsubtask=findViewById(R.id.showsubtask);
+        edAdd = findViewById(R.id.show_title);
+        edDesc = findViewById(R.id.details);
+        edDateTime = findViewById(R.id.date_time);
+        btnAdd = findViewById(R.id.btnmainadd);
+        tvImage = findViewById(R.id.image);
+        tvAddSubTask = findViewById(R.id.txaddsubtask);
+        btnUpdate = findViewById(R.id.btnmainupdate);
+        ivGalleryImage = findViewById(R.id.gallery_imageview);
+        tvShowSubTask = findViewById(R.id.showsubtask);
 
-        /*taskListAdapter = new TaskListAdapter(this ,this);*/
+
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
             noteId = bundle.getInt("note_id");
-            subnoteId=bundle.getInt("sub_note_id");
+
 
         }
-
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        subTaskViewMOdel=ViewModelProviders.of(this).get(SubTaskViewMOdel.class);
-        /* fab = findViewById(R.id.fab);*/
-        LiveData<Task> note = viewModel.getNote(noteId);
-       /* LiveData<SubTask> subnote=subTaskViewMOdel.getsubNote(subnoteId);
 
-        subnote.observe(this, new Observer<SubTask>() {
-            @Override
-            public void onChanged(SubTask subTask) {
-                    showsubtask.setText(subTask.getSub_name());
-            }
-        });*/
+        LiveData<Task> note = viewModel.getNote(noteId);
         note.observe(this, new Observer<Task>() {
             @Override
             public void onChanged(@Nullable Task task) {
-                SubTask subTask;
+
                 if (task != null) {
-                    edadd.setText(task.getName());
-                    eddesc.setText(task.getDescription());
-                    eddatetime.setText(task.getDate());
-                    tvimage.setText(task.getImg_path());
-                    addsub.setVisibility(View.GONE);
-                    btnupdate.setVisibility(View.VISIBLE);
-                    btnadd.setVisibility(View.GONE);
-
-                    showsubtask.setVisibility(View.VISIBLE);
-
-                    gallery_image.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
+                    edAdd.setText(task.getName());
+                    edDesc.setText(task.getDescription());
+                    edDateTime.setText(task.getDate());
+                    tvImage.setText(task.getImg_path());
+                    tvAddSubTask.setVisibility(View.GONE);
+                    btnUpdate.setVisibility(View.VISIBLE);
+                    btnAdd.setVisibility(View.GONE);
+                    tvShowSubTask.setVisibility(View.VISIBLE);
+                    ivGalleryImage.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
                     Drawable d = Drawable.createFromPath(task.getImg_path());
-                    gallery_image.setImageDrawable(d);
-
-
+                    ivGalleryImage.setImageDrawable(d);
 
 
                 }
@@ -184,12 +149,11 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
      */
     private void setOnClickListener() {
 
-        eddatetime.setOnClickListener(this);
-        btnadd.setOnClickListener(this);
-        addsub.setOnClickListener(this);
-        btnupdate.setOnClickListener(this);
-        /*imgDelete.setOnClickListener(this);*/
-        tvimage.setOnClickListener(this);
+        edDateTime.setOnClickListener(this);
+        btnAdd.setOnClickListener(this);
+        tvAddSubTask.setOnClickListener(this);
+        btnUpdate.setOnClickListener(this);
+        tvImage.setOnClickListener(this);
 
     }
 
@@ -213,24 +177,25 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                 break;
 
             case R.id.date_time:
-                showDateTime();
+                showDateAndTimePicker();
                 break;
             case R.id.txaddsubtask:
-                Add_Data();
+                AddDataIntoRoomDatabase();
                 navigateToSubTaskScreen();
                 break;
             case R.id.btnmainadd:
-                Add_Data();
+                AddDataIntoRoomDatabase();
                 break;
-            /*case R.id.ivRowDelete:
-                break;*/
             case R.id.btnmainupdate:
-                updatedata();
+                updateDataIntoRomDatabse();
                 break;
 
         }
     }
 
+    /**
+     * For Image Upload
+     */
     private void uploadImage() {
 
         Intent in = new Intent(Intent.ACTION_PICK);
@@ -238,40 +203,35 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         startActivityForResult(in, select_photo);
 
 
-
-
     }
 
-    private void updatedata() {
+    /**
+     * for update data in  room database
+     */
+    private void updateDataIntoRomDatabse() {
 
 
         Intent result = new Intent();
-        if (TextUtils.isEmpty(edadd.getText())) {
+        if (TextUtils.isEmpty(edAdd.getText())) {
             setResult(RESULT_CANCELED, result);
         } else {
 
             Task task;
-            String updatetitle = edadd.getText().toString();
-            String updatedesc = eddesc.getText().toString();
-            String updatedatetime = eddatetime.getText().toString();
-            String updatepath=tvimage.getText().toString();
+            String mUpdateTitle = edAdd.getText().toString();
+            String mUpdateDesc = edDesc.getText().toString();
+            String mUpdateDateTime = edDateTime.getText().toString();
+            String mUpdatePath = tvImage.getText().toString();
 
 
-
-            if (TextUtils.isEmpty(updatedesc) || TextUtils.isEmpty(updatedatetime)||TextUtils.isEmpty(updatepath))
-            {
-                task = new Task(noteId,updatetitle);
+            if (TextUtils.isEmpty(mUpdateDesc) || TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
+                task = new Task(noteId, mUpdateTitle);
                 viewModel.updateName(task);
 
-            }
-            else if(TextUtils.isEmpty(updatedatetime)||TextUtils.isEmpty(updatepath))
-            {
-                task = new Task(noteId,updatetitle,updatedesc);
+            } else if (TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
+                task = new Task(noteId, mUpdateTitle, mUpdateDesc);
                 viewModel.updateName(task);
-            }
-
-            else {
-                task = new Task(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
+            } else {
+                task = new Task(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime, mUpdatePath);
                 viewModel.updateName(task);
             }
 
@@ -286,37 +246,37 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     /**
      * for Add Main Task data in Room Database
      */
-    public void Add_Data() {
+    public void AddDataIntoRoomDatabase() {
 
 
         Intent resultintent = new Intent();
-        if (TextUtils.isEmpty(edadd.getText())) {
+        if (TextUtils.isEmpty(edAdd.getText())) {
             setResult(RESULT_CANCELED, resultintent);
         } else {
             Task task;
 
-            String note = edadd.getText().toString();
-            String desc = eddesc.getText().toString();
-            String time = eddatetime.getText().toString();
-            String path= tvimage.getText().toString();
+            String note = edAdd.getText().toString();
+            String desc = edDesc.getText().toString();
+            String time = edDateTime.getText().toString();
+            String path = tvImage.getText().toString();
 
             setResult(RESULT_OK, resultintent);
-            if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time)||TextUtils.isEmpty(path))
-            {
+            if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time) || TextUtils.isEmpty(path)) {
                 task = new Task(note);
                 viewModel.insert(task);
 
-            }
-            else if(TextUtils.isEmpty(time)||TextUtils.isEmpty(path))
+            } else if (TextUtils.isEmpty(time) || TextUtils.isEmpty(path)) {
+                task = new Task(note, desc);
+                viewModel.insert(task);
+            } else if( TextUtils.isEmpty(path))
+
             {
-                task = new Task(note,desc);
+                task = new Task(note, desc,time);
                 viewModel.insert(task);
             }
-
             else {
-                task = new Task(note, desc, time,path);
+                task = new Task(note, desc, time, path);
                 viewModel.insert(task);
-
             }
 
         }
@@ -324,7 +284,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     }
 
 
-    private void showDateTime() {
+    private void showDateAndTimePicker() {
 
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -334,6 +294,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         datePickerDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
@@ -342,51 +303,87 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         int minute = calendar.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog;
         timePickerDialog = new TimePickerDialog(AddMainTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
-        eddatetime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+        edDateTime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
         timePickerDialog.show();
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
 
-        eddatetime.setText(eddatetime.getText() + " -" + hourOfDay + ":" + minute);
+        edDateTime.setText(edDateTime.getText() + " -" + hourOfDay + ":" + minute);
+
+
+
+        Intent intent = new Intent(AddMainTaskActivity.this, AlarmReceiver.class);
+        intent.putExtra("notificationId", getUniqueNotificationId());
+        intent.putExtra("todo", edAdd.getText().toString());
+        PendingIntent alarmIntent = PendingIntent.getBroadcast(AddMainTaskActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+        // Create time.
+        Calendar startTime = Calendar.getInstance();
+        startTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        startTime.set(Calendar.MINUTE, minute);
+        startTime.set(Calendar.SECOND, 0);
+
+
+        long alarmStartTime = startTime.getTimeInMillis();
+        if (alarm != null) {
+            alarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, alarmIntent);
+        }
+
 
     }
 
-
+    public int getUniqueNotificationId() {
+        int notificationId;
+        try {
+            notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Random random = new Random();
+            notificationId = random.nextInt(9999 - 1000) + 10;
+        }
+        return notificationId;
+    }
 
 
     protected void onActivityResult(int requestcode, int resultcode,
                                     Intent imagereturnintent) {
         super.onActivityResult(requestcode, resultcode, imagereturnintent);
-        switch (requestcode) {
-            case select_photo:
-                if (resultcode == RESULT_OK) {
-                    Uri imageuri = imagereturnintent.getData();// Get intent
-                    String real_Path = getRealPathFromUri(AddMainTaskActivity.this,
-                            imageuri);
-                    tvimage.setText(real_Path);
-                    tvimage.setVisibility(View.VISIBLE);
-                    Bitmap bitmap = null;// call
-                    try {
-                        bitmap = decodeUri(AddMainTaskActivity.this, imageuri, 300);
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    if (bitmap != null)
-                        gallery_image.setImageBitmap(bitmap);// Set image over
-                        // bitmap
+        if (requestcode == select_photo) {
+            if (resultcode == RESULT_OK) {
+                Uri imageuri = imagereturnintent.getData();// Get intent
+                String real_Path = getRealPathFromUri(AddMainTaskActivity.this,
+                        imageuri);
 
-                    else
-                        Toast.makeText(AddMainTaskActivity.this,
-                                "Error while decoding image.",
-                                Toast.LENGTH_SHORT).show();
+
+                tvImage.setText(real_Path);
+                tvImage.setVisibility(View.VISIBLE);
+                //Toast.makeText(getApplicationContext(), (CharSequence) imageuri,Toast.LENGTH_SHORT).show();
+                Bitmap bitmap = null;// call
+                try {
+                    bitmap = decodeUri(AddMainTaskActivity.this, imageuri, 300);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+
                 }
+                if (bitmap != null)
+                    ivGalleryImage.setImageBitmap(bitmap);// Set image over
+                    // bitmap
+
+                else
+                    Toast.makeText(AddMainTaskActivity.this,
+                            "Error while decoding image.",
+                            Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-    // Method that deocde uri into bitmap. This method is necessary to deocde
+    // Method that deocde uri into bitmap. This method is necessary to deocdex`
     // large size images to load over imageview
     public static Bitmap decodeUri(Context context, Uri uri,
                                    final int requiredSize) throws FileNotFoundException {
@@ -398,9 +395,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         int width_tmp = o.outWidth, height_tmp = o.outHeight;
         int scale = 1;
 
-        while (true) {
-            if (width_tmp / 2 < requiredSize || height_tmp / 2 < requiredSize)
-                break;
+        while (width_tmp / 2 >= requiredSize && height_tmp / 2 >= requiredSize) {
             width_tmp /= 2;
             height_tmp /= 2;
             scale *= 2;
@@ -411,11 +406,12 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         return BitmapFactory.decodeStream(context.getContentResolver()
                 .openInputStream(uri), null, o2);
     }
-    // Get Original image path
+
+
     public static String getRealPathFromUri(Context context, Uri contentUri) {
         Cursor cursor = null;
         try {
-            String[] proj = { MediaStore.Images.Media.DATA };
+            String[] proj = {MediaStore.Images.Media.DATA};
             cursor = context.getContentResolver().query(contentUri, proj, null,
                     null, null);
             int column_index = 0;
@@ -423,7 +419,9 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                 column_index = cursor
                         .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
             }
-            cursor.moveToFirst();
+            if (cursor != null) {
+                cursor.moveToFirst();
+            }
             return cursor.getString(column_index);
         } finally {
             if (cursor != null) {

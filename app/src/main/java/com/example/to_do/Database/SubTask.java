@@ -70,7 +70,7 @@ public class SubTask {
         return sub_date_time;
     }
 
-    public void setSub_date_time(String sub_date_time) {
+    void setSub_date_time(String sub_date_time) {
         this.sub_date_time = sub_date_time;
     }
 
