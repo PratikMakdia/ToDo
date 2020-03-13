@@ -32,8 +32,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.to_do.Database.SubTask;
-import com.example.to_do.Database.SubTaskViewMOdel;
+import com.example.to_do.model.SubTask;
+import com.example.to_do.Database.SubTaskViewModel;
 import com.example.to_do.Database.ViewModel;
 
 import java.io.FileNotFoundException;
@@ -45,7 +45,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
     private EditText edSubTitle, edSubDesc, edSubDateTime;
     private Button btnSubAdd, btnSubUpdate;
-    private SubTaskViewMOdel subTaskViewMOdel;
+    private SubTaskViewModel subTaskViewModel;
     private TextView tvSubImage;
     private ImageView ivSubImage;
     private int select_photo = 1;
@@ -67,7 +67,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
      *
      */
     private void initialize() {
-        subTaskViewMOdel = new SubTaskViewMOdel((Application) getApplicationContext());
+        subTaskViewModel = new SubTaskViewModel((Application) getApplicationContext());
         edSubTitle = findViewById(R.id.tvShowSubTask);
         edSubDesc = findViewById(R.id.tvSubTaskDetails);
         edSubDateTime = findViewById(R.id.tvSubTaskDateTime);
@@ -101,7 +101,6 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
                 }
             }
         });
-
 
     }
 
@@ -147,14 +146,26 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         } else {
 
             SubTask subtask;
-            String updatetitle = edSubTitle.getText().toString();
-            String updatedesc = edSubDesc.getText().toString();
-            String updatedatetime = edSubDateTime.getText().toString();
-            String updatepath= tvSubImage.getText().toString();
+            String mUpdateTitle = edSubTitle.getText().toString();
+            String mUpdateDesc = edSubDesc.getText().toString();
+            String mUpdateDateTime = edSubDateTime.getText().toString();
+            String mUpdatePath= tvSubImage.getText().toString();
 
 
-            subtask = new SubTask(noteId, updatetitle, updatedesc, updatedatetime,updatepath);
-            subTaskViewMOdel.update(subtask);
+            subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime,mUpdatePath);
+            if (TextUtils.isEmpty(mUpdateDesc) || TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
+                subtask = new SubTask(noteId, mUpdateTitle);
+                subTaskViewModel.update(subtask);
+
+            } else if (TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
+                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc);
+                subTaskViewModel.update(subtask);
+            } else {
+                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime, mUpdatePath);
+                subTaskViewModel.update(subtask);
+            }
+
+            subTaskViewModel.update(subtask);
             setResult(RESULT_OK, result);
             finish();
         }
@@ -187,28 +198,23 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
             if (TextUtils.isEmpty(mdesc) && TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath)) {
                 subTask = new SubTask(mnote);
-                subTaskViewMOdel.insert(subTask);
+                subTaskViewModel.insert(subTask);
             }
             else if(TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath))
             {
                 subTask = new SubTask(mnote,mdesc);
-                subTaskViewMOdel.insert(subTask);
+                subTaskViewModel.insert(subTask);
             }
             else if( TextUtils.isEmpty(msubpath))
 
             {
                 subTask = new SubTask(mnote, mdesc,mtime);
-                subTaskViewMOdel.insert(subTask);
+                subTaskViewModel.insert(subTask);
             }
             else {
                 subTask = new SubTask(mnote, mdesc, mtime,msubpath);
-                subTaskViewMOdel.insert(subTask);
+                subTaskViewModel.insert(subTask);
             }
-
-
-
-
-
 
             setResult(RESULT_OK, resultintent);
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
@@ -286,7 +292,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
     protected void onActivityResult(int requestcode, int resultcode,
                                     Intent imagereturnintent) {
-        super.onActivityResult(requestcode, resultcode, imagereturnintent);
+       super.onActivityResult(requestcode, resultcode, imagereturnintent);
         if (requestcode == select_photo) {
             if (resultcode == RESULT_OK) {
                 try {
