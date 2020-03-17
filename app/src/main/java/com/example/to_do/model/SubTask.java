@@ -1,4 +1,4 @@
-package com.example.to_do.Database;
+package com.example.to_do.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -14,7 +14,7 @@ public class SubTask {
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "sub_id")
-    public int id;
+    private int id;
 
     @ColumnInfo(name = "sub_name")
     private String sub_name;
@@ -31,6 +31,16 @@ public class SubTask {
 
     @ColumnInfo(name = "maintaskid")
     private int maintask_id;
+
+
+    public SubTask(int id, String sub_name, String sub_description, String sub_date_time, String sub_img_path, int maintask_id) {
+        this.id = id;
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.sub_date_time = sub_date_time;
+        this.sub_img_path = sub_img_path;
+        this.maintask_id = maintask_id;
+    }
 
     @Ignore
     public SubTask(int id, String sub_name, String sub_description, String sub_date_time, String sub_img_path) {
@@ -70,7 +80,7 @@ public class SubTask {
         return sub_date_time;
     }
 
-    void setSub_date_time(String sub_date_time) {
+    public void setSub_date_time(String sub_date_time) {
         this.sub_date_time = sub_date_time;
     }
 
@@ -82,6 +92,7 @@ public class SubTask {
         this.maintask_id = maintask_id;
     }
 
+    @Ignore
     public SubTask(String sub_name) {
         this.sub_name = sub_name;
     }
@@ -102,6 +113,13 @@ public class SubTask {
     }
 
     @Ignore
+    public SubTask(int id, String sub_name, String sub_description) {
+        this.id = id;
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+    }
+
+    @Ignore
     public SubTask(String sub_name, String sub_description, String sub_date_time, String sub_img_path) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
@@ -109,17 +127,23 @@ public class SubTask {
         this.sub_img_path = sub_img_path;
     }
 
-    @Ignore
+   /* @Ignore
     public SubTask(String sub_name, String sub_description, String sub_date_time, int maintask_id) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
         this.sub_date_time = sub_date_time;
         this.maintask_id = maintask_id;
-    }
+    }*/
 
     @Ignore
     public SubTask(String sub_name, String sub_description) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
+    }
+
+    @Ignore
+    public SubTask(int id, String sub_name) {
+        this.id = id;
+        this.sub_name = sub_name;
     }
 }

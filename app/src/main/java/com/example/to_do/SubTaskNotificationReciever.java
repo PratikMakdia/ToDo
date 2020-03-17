@@ -10,7 +10,7 @@ import android.content.Intent;
 import android.os.Build;
 
 public class SubTaskNotificationReciever extends BroadcastReceiver {
-    static final String sub_channel_id="1002";
+   private  static final String sub_channel_id="1002";
     @Override
     public void onReceive(Context context, Intent sub_intent) {
         int subnotificationId = sub_intent.getIntExtra("sub_notificationId",0 );

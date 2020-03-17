@@ -33,7 +33,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.to_do.Database.Task;
+import com.example.to_do.model.Task;
 import com.example.to_do.Database.ViewModel;
 
 import java.io.FileNotFoundException;
@@ -43,6 +43,7 @@ import java.util.Random;
 
 public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
+    private  int getId;
     private EditText edAdd, edDesc, edDateTime;
     private TextView tvImage, tvShowSubTask, tvAddSubTask;
     private Button btnAdd, btnUpdate;
@@ -50,6 +51,8 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     private int noteId;
     private ImageView ivGalleryImage;
     private int select_photo = 1;
+    private  static int day,month,year,hour,minute;
+    private int dayFinal,monthFinal,yearFinal,hourFinal,minuteFinal;
 
 
     @Override
@@ -58,13 +61,13 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         setContentView(R.layout.activity_addmaintask);
 
         initialize();
-        edittextEmptyOrNot();
+        editTextEmptyOrNot();
         setOnClickListener();
 
     }
 
 
-    private void edittextEmptyOrNot() {
+    private void editTextEmptyOrNot() {
         if (edAdd.getText().toString().equals("")) {
             tvAddSubTask.setEnabled(false);
         }
@@ -112,8 +115,6 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
         if (bundle != null) {
             noteId = bundle.getInt("note_id");
-
-
         }
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
@@ -123,25 +124,28 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             public void onChanged(@Nullable Task task) {
 
                 if (task != null) {
+                   getId=task.getId();
                     edAdd.setText(task.getName());
                     edDesc.setText(task.getDescription());
                     edDateTime.setText(task.getDate());
                     tvImage.setText(task.getImg_path());
-                    tvAddSubTask.setVisibility(View.GONE);
+                    tvAddSubTask.setVisibility(View.VISIBLE);
                     btnUpdate.setVisibility(View.VISIBLE);
                     btnAdd.setVisibility(View.GONE);
-                    tvShowSubTask.setVisibility(View.VISIBLE);
+//                    tvShowSubTask.setVisibility(View.VISIBLE);
                     ivGalleryImage.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
                     Drawable d = Drawable.createFromPath(task.getImg_path());
                     ivGalleryImage.setImageDrawable(d);
-
-
                 }
             }
         });
 
 
+
+
+
     }
+
 
 
     /**
@@ -164,6 +168,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     private void navigateToSubTaskScreen() {
 
         Intent i = new Intent(getApplicationContext(), AddSubTaskActivity.class);
+
         startActivity(i);
     }
 
@@ -187,9 +192,8 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                 AddDataIntoRoomDatabase();
                 break;
             case R.id.btnMainTaskUpdate:
-                updateDataIntoRomDatabse();
+                updateDataIntoRomDatabase();
                 break;
-
         }
     }
 
@@ -208,7 +212,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     /**
      * for update data in  room database
      */
-    private void updateDataIntoRomDatabse() {
+    private void updateDataIntoRomDatabase() {
 
 
         Intent result = new Intent();
@@ -248,49 +252,103 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
      */
     public void AddDataIntoRoomDatabase() {
 
-
-        Intent resultintent = new Intent();
+        Intent resultIntent = new Intent();
         if (TextUtils.isEmpty(edAdd.getText())) {
-            setResult(RESULT_CANCELED, resultintent);
+            setResult(RESULT_CANCELED, resultIntent);
         } else {
             Task task;
 
-            String note = edAdd.getText().toString();
-            String desc = edDesc.getText().toString();
-            String time = edDateTime.getText().toString();
-            String path = tvImage.getText().toString();
+            final String mNote = edAdd.getText().toString();
+            String mDesc = edDesc.getText().toString();
+            String mTime = edDateTime.getText().toString();
+            String mPath = tvImage.getText().toString();
 
-            setResult(RESULT_OK, resultintent);
-            if (TextUtils.isEmpty(desc) || TextUtils.isEmpty(time) || TextUtils.isEmpty(path)) {
-                task = new Task(note);
+            setResult(RESULT_OK, resultIntent);
+            if (TextUtils.isEmpty(mDesc) || TextUtils.isEmpty(mTime) || TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote);
                 viewModel.insert(task);
+                LiveData<Task> note = viewModel.mainTaskId(mNote);
+                note.observe(this, new Observer<Task>() {
+                    @Override
+                    public void onChanged(@Nullable Task task) {
 
-            } else if (TextUtils.isEmpty(time) || TextUtils.isEmpty(path)) {
-                task = new Task(note, desc);
-                viewModel.insert(task);
+                        if (task != null) {
+                            getId=edAdd.getId();
+                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
 
-            } else if( TextUtils.isEmpty(path))
+                        }
+                    }
+                });
+//
 
-            {
-                task = new Task(note, desc,time);
+            } else if (TextUtils.isEmpty(mTime) || TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, mDesc);
                 viewModel.insert(task);
-            }
-            else {
-                task = new Task(note, desc, time, path);
+                LiveData<Task> note = viewModel.mainTaskId(mNote);
+                note.observe(this, new Observer<Task>() {
+                    @Override
+                    public void onChanged(@Nullable Task task) {
+
+                        if (task != null) {
+                            getId=edAdd.getId();
+                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+//
+                //Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+
+
+            } else if (TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, mDesc, mTime);
                 viewModel.insert(task);
+                LiveData<Task> note = viewModel.mainTaskId(mNote);
+                note.observe(this, new Observer<Task>() {
+                    @Override
+                    public void onChanged(@Nullable Task task) {
+
+                        if (task != null) {
+                            getId=edAdd.getId();
+                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+//
+                //Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+
+            } else {
+                task = new Task(mNote, mDesc, mTime, mPath);
+                viewModel.insert(task);
+                LiveData<Task> note = viewModel.mainTaskId(mNote);
+                note.observe(this, new Observer<Task>() {
+                    @Override
+                    public void onChanged(@Nullable Task task) {
+
+                        if (task != null) {
+                            getId=edAdd.getId();
+                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+//
+               // Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+
             }
 
         }
+        SetNotification();
         finish();
     }
 
 
     private void showDateAndTimePicker() {
-
         Calendar calendar = Calendar.getInstance();
-        int year = calendar.get(Calendar.YEAR);
-        int month = calendar.get(Calendar.MONTH);
-        int day = calendar.get(Calendar.DAY_OF_MONTH);
+         year = calendar.get(Calendar.YEAR);
+         month = calendar.get(Calendar.MONTH);
+         day = calendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddMainTaskActivity.this, this, year, month, day);
         datePickerDialog.show();
     }
@@ -299,24 +357,32 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
+        yearFinal=year;
+        monthFinal=month+1;
+        dayFinal=dayOfMonth;
+
         Calendar calendar = Calendar.getInstance();
-        int hour = calendar.get(Calendar.HOUR_OF_DAY);
-        int minute = calendar.get(Calendar.MINUTE);
+         hour = calendar.get(Calendar.HOUR_OF_DAY);
+         minute = calendar.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog;
         timePickerDialog = new TimePickerDialog(AddMainTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
-        edDateTime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
+
         timePickerDialog.show();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        hourFinal=hourOfDay;
+        minuteFinal=minute;
+
+        edDateTime.setText(dayFinal + "/" + (monthFinal + 1) + "/" + yearFinal + " -" + hourFinal + ":" + minuteFinal);
 
 
-        edDateTime.setText(edDateTime.getText() + " -" + hourOfDay + ":" + minute);
+    }
 
-
-
+    public void SetNotification()
+    {
         Intent intent = new Intent(AddMainTaskActivity.this, AlarmReceiver.class);
         intent.putExtra("notificationId", getUniqueNotificationId());
         intent.putExtra("todo", edAdd.getText().toString());
@@ -326,20 +392,21 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
         // Create time.
         Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, hourOfDay);
-        startTime.set(Calendar.MINUTE, minute);
-        startTime.set(Calendar.SECOND, 0);
+
+        startTime.set(Calendar.YEAR,yearFinal);
+        startTime.set(Calendar.MONTH,monthFinal);
+        startTime.set(Calendar.DAY_OF_MONTH,dayFinal);
+        startTime.set(Calendar.HOUR_OF_DAY, hourFinal);
+        startTime.set(Calendar.MINUTE, minuteFinal);
+
 
 
         long alarmStartTime = startTime.getTimeInMillis();
         if (alarm != null) {
             alarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, alarmIntent);
         }
-
-
     }
-
-    public int getUniqueNotificationId() {
+    public static int getUniqueNotificationId() {
         int notificationId;
         try {
             notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);
@@ -423,9 +490,8 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             if (cursor != null) {
                 cursor.moveToFirst();
             }
-            if (cursor != null) {}
-                return cursor.getString(column_index);
 
+            return cursor.getString(column_index);
         } finally {
             if (cursor != null) {
                 cursor.close();

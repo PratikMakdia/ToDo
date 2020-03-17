@@ -7,9 +7,11 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.to_do.model.SubTask;
+
 import java.util.List;
 
-public class SubTaskViewMOdel extends AndroidViewModel {
+public class SubTaskViewModel extends AndroidViewModel {
 
     private static SubTaskDao subTaskDao;
     private String TAG = this.getClass().getSimpleName();
@@ -17,7 +19,7 @@ public class SubTaskViewMOdel extends AndroidViewModel {
     private LiveData<List<SubTask>> mAllsubNote;
 
 
-    public SubTaskViewMOdel(@NonNull Application application) {
+    public SubTaskViewModel(@NonNull Application application) {
         super(application);
 
         TaskDatabase taskDB = TaskDatabase.getDatabase(application);

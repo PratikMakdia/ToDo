@@ -13,17 +13,90 @@
         <item name="android:textSize">15sp</item></style>
 
     <style name="FontOpenSans">
-        <item name="android:fontFamily">@font/open_sans</item>
+        <item name="android:fontFamily">@font/opensans</item>
     </style>
 
 
-    <style name="Textonline">
-        <item name="android:layout_width">2dp</item>
-        <item name="android:color">@color/black</item>
 
-    </style>
     <style name="myTaskTvSize">
+        <item name="android:text">@string/my_tasks</item>
         <item name="android:textSize">20sp</item>
+        <item name="android:layout_marginStart">30dp</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
     </style>
 
+    <style name="editTextSize">
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:layout_marginTop">3dp</item>
+        <item name="android:layout_marginEnd">25dp</item>
+    </style>
+    <style name="textViewSize">
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginEnd">25dp</item>
+    </style>
+
+
+    <style name="buttonMarginSize">
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:layout_marginEnd">25dp</item>
+        <item name="android:layout_marginBottom">30dp</item>
+
+    </style>
+    
+    <style name="signUpText">
+        <item name="android:layout_marginStart">30dp</item>
+       <item name="android:layout_marginTop">30dp</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+
+    <style name="imageViewMargin">
+        <item name="android:layout_marginTop">30dp</item>
+        <item name="android:layout_marginEnd">15dp</item>
+    </style>
+
+    <style name="taskDoneButton">
+        <item name="android:layout_marginStart">130dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginEnd">130dp</item>
+        <item name="android:layout_marginBottom">30dp</item>
+        <item name="android:textColor">@color/orange</item>
+    </style>
+    <style name="taskUpdateButton">
+        <item name="android:layout_marginStart">130dp</item>
+        <item name="android:layout_marginEnd">130dp</item>
+        <item name="android:layout_marginBottom">30dp</item>
+        <item name="android:textColor">@color/orange</item>
+    </style>
+
+    <style name="textViewMainTaskShow">
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:padding">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:layout_marginTop">20dp</item>
+
+    </style>
+
+    <style name="textViewTaskShow">
+        <item name="android:layout_marginStart">25dp</item>
+        <item name="android:padding">18sp</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:drawablePadding">15dp</item>
+
+    </style>
+
+    <style name="showTaskName">
+        <item name="android:layout_margin">7dp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">18sp</item>
+    </style>
 </resources>

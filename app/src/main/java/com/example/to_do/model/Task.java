@@ -1,6 +1,5 @@
-package com.example.to_do.Database;
+package com.example.to_do.model;
 
-import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
@@ -9,7 +8,6 @@ import androidx.room.PrimaryKey;
 @Entity(tableName = "tasks")
 public class Task {
 
-    @NonNull
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
     private int id;
@@ -21,12 +19,14 @@ public class Task {
     private String description;
 
     @ColumnInfo(name = "Date")
-    private String date;
+    private   String date;
     @ColumnInfo(name = "img_path")
     private String img_path;
 
+/*
     @ColumnInfo(name ="word_order")
     private int order;
+*/
 
     @Ignore
     public Task(int id, String name, String description, String date, String img_path) {
@@ -38,11 +38,13 @@ public class Task {
     }
 
 
+/*
 
     @Ignore
     public Task(int order) {
         this.order = order;
     }
+*/
 
     public Task(int id, String name, String description, String date) {
         this.id = id;
@@ -51,13 +53,13 @@ public class Task {
         this.date = date;
     }
 
-    @Ignore
+  /*  @Ignore
     public Task(String name, String description, String date, int order) {
         this.name = name;
         this.description = description;
         this.date = date;
         this.order = order;
-    }
+    }*/
 
     @Ignore
     public Task(int id, String name) {
@@ -122,13 +124,13 @@ public class Task {
         this.name = name;
     }
 
-    public int getOrder() {
+   /* public int getOrder() {
         return order;
     }
 
     public void setOrder(int order) {
         this.order = order;
-    }
+    }*/
 
     @Ignore
     public Task(String name, String description, String date, String img_path) {

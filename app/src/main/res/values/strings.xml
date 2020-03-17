@@ -58,6 +58,7 @@
     <string name="logout_message">Are you sure you want Logout?</string>
     <string name="dont_account_message">don\'t have an account? SIGN UP</string>
     <string name="already_account_message">already have an account? SIGN IN</string>
+    <string name="please_wait_your_data_save_message">Please Wait, We are Registering Your Data on Server</string>
 
 
 </resources>

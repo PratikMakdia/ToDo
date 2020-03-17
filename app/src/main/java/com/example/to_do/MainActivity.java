@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -22,9 +21,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.Database.Task;
-import com.example.to_do.Database.TaskListAdapter;
+import com.example.to_do.Database.SubTaskListAdapter;
+import com.example.to_do.Database.SubTaskViewModel;
 import com.example.to_do.Database.ViewModel;
+import com.example.to_do.model.SubTask;
+import com.example.to_do.model.Task;
+import com.example.to_do.model.TaskListAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -36,13 +38,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 
-    FirebaseAuth firebaseAuth;
+   private FirebaseAuth firebaseAuth;
     private ImageView ivMenuOrder;
     private RecyclerView rvShowMainTask;
     private ViewModel viewModel;
+    private SubTaskViewModel subTaskViewModel;
     private TaskListAdapter taskListAdapter;
     private ImageView ivLogout;
     private FloatingActionButton fbtnAddMainTask;
+    private AlarmReceiver mAlarmReceiver;
+    private  RecyclerView rvShowSubTask;
+    private SubTaskListAdapter subTaskListAdapter;
 
 
     @Override
@@ -69,11 +75,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ivMenuOrder =findViewById(R.id.ivMenuSortOrder);
         rvShowMainTask = findViewById(R.id.rvShowTasks);
+        rvShowSubTask = findViewById(R.id.rvSubRecyclerView);
 
 
         taskListAdapter = new TaskListAdapter(this, this);
         rvShowMainTask.setAdapter(taskListAdapter);
         rvShowMainTask.setLayoutManager(new LinearLayoutManager(this));
+
+       subTaskListAdapter = new SubTaskListAdapter(this);
+    /*   rvShowSubTask.setAdapter(subTaskListAdapter);
+        rvShowSubTask.setVisibility(View.VISIBLE);*/
+       /* rvShowSubTask.setAdapter(subTaskListAdapter);
+        rvShowSubTask.setLayoutManager(new LinearLayoutManager(this));*/
 
 
         rvShowMainTask.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -118,6 +131,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             }
         });
+        subTaskViewModel=ViewModelProviders.of(this).get(SubTaskViewModel.class);
+        subTaskViewModel.getmAllsubNote().observe(this, new Observer<List<SubTask>>() {
+            @Override
+            public void onChanged(List<SubTask> subTasks) {
+
+                subTaskListAdapter.setNotes(subTasks);
+            }
+        });
+
 
     }
 
@@ -168,10 +190,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
            /* Task task;
             task= new Task(endposition);
             viewModel.insert(task);*/
-            String abc= String.valueOf(startposition);
+           /* String abc= String.valueOf(startposition);
             Toast.makeText(getApplicationContext(),abc,Toast.LENGTH_SHORT).show();
             String xyz= String.valueOf(endposition);
-            Toast.makeText(getApplicationContext(),xyz,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(),xyz,Toast.LENGTH_SHORT).show();*/
 
             return true;
         }
@@ -183,19 +205,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
 
-        return super.onTouchEvent(event);
-
-    }
 
     /**
      * for check firebase user Login  or not
      */
     private void userornot() {
         if (firebaseAuth.getCurrentUser() == null) {
-            finish();
+
             navigateToLoginScreen();
 
         }
@@ -206,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void navigateToLoginScreen() {
         startActivity(new Intent(getBaseContext(), LoginActivity.class));
+        finish();
     }
 
     /**
@@ -297,8 +315,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onDeleteClickListener(Task myTask) {
-        viewModel.delete(myTask);
 
+/*
+        Bundle bundle = getIntent().getExtras();
+        int  noteId = 0;
+        if (bundle != null) {
+            noteId = bundle.getInt("note_id");
+
+
+        }*/
+        /*Intent mainIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+        int uniqueNotificationId = mainIntent.getIntExtra("GenerateNotificationId",0 );
+        //  int uniqueNotificationId=AddMainTaskActivity.getUniqueNotificationId();
+        AlarmReceiver.cancelNotification(getApplicationContext(),uniqueNotificationId);*/
+        viewModel.delete(myTask);
     }
 
 

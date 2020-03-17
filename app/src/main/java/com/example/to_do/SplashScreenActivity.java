@@ -7,15 +7,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        Thread thread = new Thread(){
+
+
+        Thread thread = new Thread() {
             @Override
             public void run() {
                 try {
-                    sleep(3000); // after 3 sec open other activity or in our case StartActivity
+                    sleep(3000);
                     startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                     finish();
                 } catch (InterruptedException e) {
@@ -25,4 +28,6 @@ public class SplashScreenActivity extends AppCompatActivity {
         };
         thread.start();
     }
+
 }
+

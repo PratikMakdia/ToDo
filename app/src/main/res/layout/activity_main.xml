@@ -5,49 +5,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    tools:context=".MainActivity">
 
     <RelativeLayout
         android:id="@+id/rlMainTaskToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
         <TextView
             android:id="@+id/tvMyTasks"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
+            style="@style/myTaskTvSize"
             android:fontFamily="@style/FontOpenSans"
-            android:text="@string/my_tasks"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize"
-            android:textStyle="bold"
             />
 
         <ImageView
-
             android:id="@+id/ivLogout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+           style="@style/imageViewMargin"
             android:layout_toLeftOf="@id/ivMenuSortOrder"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/ic_power_settings_new_24px" />
+            android:src="@drawable/ic_power_settings_new_24px"
+            android:contentDescription="TODO" />
 
         <ImageView
             android:id="@+id/ivMenuSortOrder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="20dp"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_sort_24px"/>
+           style="@style/imageViewMargin"
+            android:src="@drawable/ic_sort_24px" />
 
     </RelativeLayout>
-
 
 
     <LinearLayout
@@ -57,8 +46,6 @@
         android:layout_below="@id/rlMainTaskToolbar"
         android:layout_marginTop="20dp"
         android:background="@drawable/task_border"
-        android:focusable="true"
-
         android:fontFamily="@style/FontOpenSans"
         android:orientation="vertical">
 
@@ -66,7 +53,8 @@
             android:id="@+id/rvShowTasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/darker_gray" />
+            android:background="@android:color/darker_gray"
+            tools:listitem="@layout/list_item"/>
 
 
     </LinearLayout>
@@ -79,8 +67,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="20dp"
-        android:background="@color/white"
         android:src="@drawable/ic_add"
-        app:backgroundTint="@null" />
+        app:backgroundTint="@color/white"
+         />
 
 </RelativeLayout>

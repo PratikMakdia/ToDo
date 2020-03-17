@@ -9,15 +9,9 @@
 
         <TextView
             android:id="@+id/tvShowMainTask"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
             android:fontFamily="@style/FontOpenSans"
-            android:text="@string/my_tasks"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize"
-            android:textStyle="bold" />
+            style="@style/myTaskTvSize"
+             />
 
 
         <LinearLayout
@@ -36,45 +30,31 @@
                 android:id="@+id/tvShowSubTask"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="30dp"
                 android:fontFamily="@style/FontOpenSans"
                 android:hint="@string/sub_tasks"
-                android:padding="@dimen/paddingTextBox"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                style="@style/textViewMainTaskShow"/>
 
             <EditText
                 android:id="@+id/tvSubTaskDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
+                style="@style/textViewTaskShow"
                 android:drawableStart="@drawable/ic_add_details"
-                android:drawablePadding="15dp"
                 android:fontFamily="@style/FontOpenSans"
                 android:hint="@string/add_details"
-                android:padding="@dimen/paddingTextBox"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                />
 
             <EditText
                 android:id="@+id/tvSubTaskDateTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
+
+                style="@style/textViewTaskShow"
                 android:drawableStart="@drawable/ic_date_time"
                 android:drawablePadding="15dp"
-                android:editable="false"
                 android:focusable="false"
                 android:fontFamily="@style/FontOpenSans"
-                android:hint="@string/add_Date_time"
-                android:importantForAutofill="no"
-                android:inputType=""
-                android:padding="@dimen/paddingTextBox"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                tools:ignore="TextFields" />
+                android:hint="@string/add_Date_time" />
 
             <RelativeLayout
                 android:id="@+id/rlSubImage"
@@ -83,36 +63,28 @@
 
                 <TextView
                     android:id="@+id/tvShowSubImagePath"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginStart="25dp"
+                    style="@style/textViewTaskShow"
                     android:drawableStart="@drawable/ic_add_image"
-                    android:drawablePadding="15dp"
                     android:fontFamily="@style/FontOpenSans"
                     android:hint="@string/add_image"
-                    android:padding="@dimen/paddingTextBox"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    />
 
                 <ImageView
                     android:id="@+id/ivSubImageView"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_alignParentEnd="true"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="5dp"
-                    android:scaleType="centerCrop" />
+                    android:layout_marginEnd="20dp"
+                    />
             </RelativeLayout>
 
             <Button
                 android:id="@+id/btnSubAdd"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="130dp"
-                android:layout_marginBottom="30dp"
+                style="@style/taskDoneButton"
                 android:background="@drawable/button_done"
                 android:text="@string/done"
                 android:textColor="@color/orange" />
@@ -121,12 +93,10 @@
                 android:id="@+id/btnSubUpdate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginEnd="130dp"
-                android:layout_marginBottom="30dp"
+                style="@style/taskUpdateButton"
                 android:background="@drawable/button_done"
                 android:text="@string/update"
-                android:textColor="@color/orange"
+
                 android:visibility="gone" />
         </LinearLayout>
 

@@ -7,6 +7,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.to_do.model.Task;
+
 import java.util.List;
 
 @Dao
@@ -23,8 +25,8 @@ public interface TaskDao {
 
   
 
-    @Query("SELECT id from tasks WHERE name=:taskname")
-    int  GetId(String taskname);
+    @Query("SELECT id from tasks WHERE name=:taskName")
+    LiveData<Task>  GetId(String taskName);
 
     @Delete
     int delete(Task task);

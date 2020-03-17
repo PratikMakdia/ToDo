@@ -9,80 +9,70 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cardview"
-        android:clickable="false"
+        android:id="@+id/cvMainTask"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:focusable="false">
 
-            <RelativeLayout
-                android:id="@+id/rlMainTask"
+        <RelativeLayout
+            android:id="@+id/rlMainTask"
+            android:layout_width="wrap_content"
+            android:layout_height="60dp"
+            android:gravity="center_vertical"
+            tools:ignore="ExtraText">
+
+            <CheckBox
+                android:id="@+id/chkMainTask"
+                style="@style/showTaskName"
                 android:layout_width="wrap_content"
-                android:layout_height="60dp"
-                android:gravity="center_vertical">
-                <CheckBox android:id="@+id/chkMainTask"
-                    android:text="Demo"
-                    android:layout_width="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="7dp"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
 
-                    />
+                android:layout_height="wrap_content"
+                android:text="Demo"
+                tools:ignore="HardcodedText" />
 
-             <!--   <TextView
-                    android:id="@+id/txvNote"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="7dp"
-                    android:text="Note"
-                    android:layout_toRightOf="@id/maintaskCheck"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />-->
+               <TextView
+                   android:id="@+id/txvNote"
+                   android:layout_width="wrap_content"
+                   android:layout_height="wrap_content"
+                   android:layout_margin="7dp"
+                   android:text="Note"
+                   android:textColor="@color/black"
+                   android:textSize="18sp"
+                   android:textStyle="bold"
+                   android:visibility="gone"/>
 
-                <ImageView
-                    android:id="@+id/ivRowDelete"
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:layout_margin="7dp"
-                    android:src="@drawable/ic_delete"
-                    android:layout_alignParentEnd="true"
-                    />
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/ivRowEdit"
+                style="@style/showTaskName"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_margin="7dp"
+                android:layout_toLeftOf="@id/ivRowDelete"
+                android:contentDescription="TODO"
 
-        <!--  <androidx.recyclerview.widget.RecyclerView
-
-                android:layout_below="@+id/cardview"
-                android:id="@+id/subrecyclerview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/darker_gray"
-                android:clipToPadding="false">
-
-
-            </androidx.recyclerview.widget.RecyclerView>-->
+                android:src="@drawable/ic_edit_black_24dp"
+              />
+            <ImageView
+                android:id="@+id/ivRowDelete"
+                style="@style/showTaskName"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_margin="7dp"
+                android:src="@drawable/ic_delete" />
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 
-    </LinearLayout>
-
-
-
-
-   <!-- <LinearLayout
-
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvSubRecyclerView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:orientation="vertical">
+        tools:listitem="@layout/sub_list"
+        />
 
 
+</LinearLayout>
 
 
-    </LinearLayout>
-
--->
 

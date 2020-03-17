@@ -40,7 +40,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.activity_register);
 
         initialize();
-        clickableTextview();
+        manageOnClickOfLogin();
         setOnClickListener();
 
     }
@@ -48,11 +48,11 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     /**
      * for Clickable Sign in TextView
      */
-    private void clickableTextview() {
+    private void manageOnClickOfLogin() {
 
         String mLoginText = getString(R.string.already_account_message);
         SpannableString ss = new SpannableString(mLoginText);
-        ClickableSpan clickableSpanSignin = new ClickableSpan() {
+        ClickableSpan clickableSpanSignIn = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
                 navigateToLoginScreen();
@@ -65,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 ds.setUnderlineText(false);
             }
         };
-        ss.setSpan(clickableSpanSignin, 24, 32, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        ss.setSpan(clickableSpanSignIn, 24, 32, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         tvSignIn.setText(ss);
         tvSignIn.setMovementMethod(LinkMovementMethod.getInstance());
     }
@@ -117,9 +117,10 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
      * for Navigate to login Screen
      */
     private void navigateToLoginScreen() {
-        finish();
+
         Intent i = new Intent(getBaseContext(), LoginActivity.class);
         startActivity(i);
+        finish();
     }
 
 
@@ -130,7 +131,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
 
         if (CheckEditTextIsEmptyOrNot()) {
-            pbRegisterDialog.setMessage("Please Wait, We are Registering Your Data on Server");
+            pbRegisterDialog.setMessage(getString(R.string.please_wait_your_data_save_message));
             pbRegisterDialog.show();
 
             firebaseAuth.createUserWithEmailAndPassword(mEmail, mPassword)
@@ -141,10 +142,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                             if (task.isSuccessful()) {
 
-                                finish();
-                                // firebaseAuth.signOut();
                                 navigateToLoginScreen();
-                                //Toast.makeText(getApplicationContext(), R.string.success, Toast.LENGTH_SHORT).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), R.string.valid_email, Toast.LENGTH_SHORT).show();
                             }

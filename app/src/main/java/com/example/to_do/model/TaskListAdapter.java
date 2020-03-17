@@ -1,6 +1,5 @@
-package com.example.to_do.Database;
+package com.example.to_do.model;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -11,13 +10,14 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.AddMainTaskActivity;
+import com.example.to_do.Database.SubTaskListAdapter;
 import com.example.to_do.R;
 
 import java.util.Collection;
@@ -32,64 +32,66 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     private LayoutInflater layoutInflater;
     private Context mcontext;
     private OnDeleteClickListener onDeleteClickListener;
-    private CardView cardView;
+    private RecyclerView rvSubTAsk;
+    private SubTaskListAdapter subTaskListAdapter;
 
 
     public TaskListAdapter(Context context, OnDeleteClickListener listener) {
+//        rvSubTAsk.setVisibility(View.VISIBLE);
         layoutInflater = LayoutInflater.from(context);
         mcontext = context;
         this.onDeleteClickListener = listener;
-
     }
+
 
     @NonNull
     @Override
     public TaskViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = layoutInflater.inflate(R.layout.list_item, parent, false);
-
         return new TaskViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull TaskViewHolder holder, int position) {
-
-
+    public void onBindViewHolder(@NonNull final TaskViewHolder holder, final int position) {
         if (mTaskes != null) {
             Task task = mTaskes.get(position);
             holder.setData(task.getName(), position);
-            holder.setListners();
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+
+                }
+            });
+
+            holder.imgEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {  Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
+                    intent.putExtra("note_id", mTaskes.get(position).getId());
+                    mcontext.startActivity(intent);
+
+                }
+            });
+
+
+            holder.imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (onDeleteClickListener != null) {
+                        onDeleteClickListener.onDeleteClickListener(mTaskes.get(position));
+                    }
+                }
+            });
 
         } else {
             // Covers the case of data not being ready yet.
-            holder.taskItemView.setText(R.string.no_note);
+            Toast.makeText(mcontext,R.string.no_note,Toast.LENGTH_SHORT).show();
         }
 
 
 
-
-
-
-       /* if(msubtaskes!=null)
-        {
-            SubTask subTaskask = msubtaskes.get(position);
-            holder.setSubData(subTaskask.getSub_name(), position);
-            holder.setListners();
-
-        }*/
     }
-/*
 
-    public void setIndexInDatabase() {
-        TaskDao taskDao = TaskDatabase.getDatabase(mcontext).taskDao();
-        SubTaskDao subTaskDao=TaskDatabase.getDatabase(mcontext).subTaskDao();
-        for (Task task : mtaskes) {
-            task.setOrder(mtaskes.indexOf(task));
-            taskDao.insert(task);
-        }
-
-
-    }
-*/
 
     @Override
     public int getItemCount() {
@@ -233,22 +235,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     }
 
-    public class TaskViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
+    public static class TaskViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
 
         private TextView taskItemView;
-        private ImageView imgDelete;
+        private ImageView imgDelete,imgEdit;
         private int mPosition;
         private CheckBox chkMainTask;
 
+        private RecyclerView rvSubTAsk;
 
         public TaskViewHolder(View itemView) {
             super(itemView);
 
-            chkMainTask =itemView.findViewById(R.id.chkMainTask);
-//            TaskItemView = itemView.findViewById(R.id.txvNote);
+            chkMainTask = itemView.findViewById(R.id.chkMainTask);
+            taskItemView = itemView.findViewById(R.id.txvNote);
+            imgEdit=itemView.findViewById(R.id.ivRowEdit);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
-            cardView = itemView.findViewById(R.id.cardview);
+            rvSubTAsk=itemView.findViewById(R.id.rvSubRecyclerView);
 
         }
 
@@ -256,65 +260,28 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             chkMainTask.setText(note);
             //TaskItemView.setText(note);
             mPosition = position;
-
             chkMainTask.setOnCheckedChangeListener(this);
         }
 
 
 
-
-        private void setListners() {
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
-                    intent.putExtra("note_id", mTaskes.get(mPosition).getId());
-
-                    ((Activity) mcontext).startActivity(intent);
-                }
-            });
-
-
-
-
-
-
-
-
-
-            imgDelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (onDeleteClickListener != null) {
-                        onDeleteClickListener.onDeleteClickListener(mTaskes.get(mPosition));
-                    }
-                }
-            });
-
-           /* subimgdelete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onDeleteClickListener != null) {
-                        onDeleteClickListener.OnDeleteClickListener(msubtaskes.get(msubPosition));
-                    }
-                }
-            });*/
-        }
-
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            if(isChecked)
-            {
-                chkMainTask.setPaintFlags(chkMainTask.getPaintFlags()| Paint.STRIKE_THRU_TEXT_FLAG);
+            if (isChecked) {
+                chkMainTask.setPaintFlags(chkMainTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
-            }
-            else
-            {
+            } else {
                 chkMainTask.setPaintFlags(0);
 
             }
         }
+
     }
+
+
+
+
+
 
 
 }

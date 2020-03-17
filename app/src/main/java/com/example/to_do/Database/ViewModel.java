@@ -8,6 +8,9 @@ import android.util.Log;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import com.example.to_do.model.SubTask;
+import com.example.to_do.model.Task;
+
 import java.util.List;
 
 public class ViewModel extends AndroidViewModel {
@@ -77,8 +80,10 @@ public class ViewModel extends AndroidViewModel {
 
         return subTaskDao.getSubNote(noteId);
     }
-    public int maintaskid(String taskname) {
-        return taskDao.GetId(taskname);
+
+
+    public LiveData<Task> mainTaskId(String taskName) {
+        return taskDao.GetId(taskName);
     }
 
     @SuppressLint("StaticFieldLeak")

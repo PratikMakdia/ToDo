@@ -1,50 +1,74 @@
 package com.example.to_do.Database;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
+import com.example.to_do.AddMainTaskActivity;
 import com.example.to_do.R;
+import com.example.to_do.model.SubTask;
 
 import java.util.List;
 
 public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.SubViewHolder> {
 
-    private LayoutInflater sublayoutInflater;
-    private Context mcontext;
 
-    private List<SubTask> msubtaskes;
+    private List<SubTask> mSubTaskes;
+    private Context mSubContext;
+    private LayoutInflater subLayoutInflater;
+
 
 
     public SubTaskListAdapter(Context context) {
-        sublayoutInflater = LayoutInflater.from(context);
-        mcontext = context;
+        subLayoutInflater = LayoutInflater.from(context);
+        mSubContext = subLayoutInflater.getContext();
 
     }
+
+
 
     @NonNull
     @Override
-    public SubViewHolder onCreateViewHolder(@NonNull ViewGroup child, int viewType) {
-
-        View subitemview = sublayoutInflater.inflate(R.layout.sub_list, child, false);
-        SubViewHolder subTaskViewHolder=  new SubViewHolder(subitemview);
-        return subTaskViewHolder;
+    public SubViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View subItemView = subLayoutInflater.inflate(R.layout.sub_list, parent, false);
+        return new SubViewHolder(subItemView);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull SubViewHolder holder, int position) {
-        if(msubtaskes!=null)
-        {
-            SubTask subTaskask = msubtaskes.get(position);
-            holder.setSubData(subTaskask.getSub_name(), position);
+    public void onBindViewHolder(@NonNull SubViewHolder subViewHolder, final int subPosition) {
+        if (mSubTaskes != null) {
+            SubTask subTask = mSubTaskes.get(subPosition);
+            subViewHolder.setData(subTask.getSub_name(), subPosition);
 
 
+
+            subViewHolder.imgEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(mSubContext, AddMainTaskActivity.class);
+                    intent.putExtra("noteId", mSubTaskes.get(subPosition).getId());
+                    mSubContext.startActivity(intent);
+                }
+            });
+
+            subViewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   /* if (onDeleteClickListener != null) {
+                        onDeleteClickListener.onDeleteClickListener(mSubTaskes.get(subPosition));
+                    }*/
+                }
+            });
         }
 
     }
@@ -52,37 +76,62 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
 
     @Override
     public int getItemCount() {
-        if(msubtaskes!=null)
-            return msubtaskes.size();
+        if (mSubTaskes != null)
+            return mSubTaskes.size();
+
         return 0;
     }
 
-    public void setSubNotes(List<SubTask> subTasks)
-    {
-        msubtaskes=subTasks;
+    public void setNotes(List<SubTask> subTasks) {
+        mSubTaskes = subTasks;
         notifyDataSetChanged();
+    }
+
+
+    public interface OnDeleteClickListener {
+        void onDeleteClickListener(SubTask subTask);
+
 
     }
 
 
-    public class SubViewHolder extends RecyclerView.ViewHolder {
+    public static class SubViewHolder extends ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
-        private TextView SubTaskItemVIew;
-        private ImageView imgDelete, subimgdelete;
+        private CheckBox chkSubTask;
+        private int mSubPosition;
+        private ImageView imgDelete, imgEdit;
 
-        private int msubPosition;
 
-        public SubViewHolder(@NonNull View itemView) {
-
+        private SubViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            SubTaskItemVIew=itemView.findViewById(R.id.subtxNote);
+
+            chkSubTask = itemView.findViewById(R.id.chkSubTask);
+            imgDelete = itemView.findViewById(R.id.ivSubRowDelete);
+            imgEdit = itemView.findViewById(R.id.ivSubRowEdit);
+
 
         }
 
-        public void setSubData(String sub_name, int position) {
-            SubTaskItemVIew.setText(sub_name);
-            msubPosition = position;
+        private void setData(String note, int position) {
+
+            chkSubTask.setText(note);
+            //TaskItemView.setText(note);
+            mSubPosition = position;
+            chkSubTask.setOnCheckedChangeListener(this);
+        }
+
+
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            if (isChecked) {
+                chkSubTask.setPaintFlags(chkSubTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+            } else {
+                chkSubTask.setPaintFlags(0);
+
+            }
         }
     }
 }
+

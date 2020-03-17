@@ -102,6 +102,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+
     }
 
 
@@ -256,12 +257,12 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
         edSubDateTime.setText(edSubDateTime.getText() + " -" + hourOfDay + ":" + minute);
 
-        Intent subintent = new Intent(AddSubTaskActivity.this, SubTaskNotificationReciever.class);
-        subintent.putExtra("sub_notificationId", getUniqueNotificationId());
-        subintent.putExtra("sub_todo", edSubTitle.getText().toString());
-        PendingIntent subalarmIntent = PendingIntent.getBroadcast(AddSubTaskActivity.this, 0, subintent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Intent subIntent = new Intent(AddSubTaskActivity.this, SubTaskNotificationReciever.class);
+        subIntent.putExtra("sub_notificationId", getUniqueNotificationId());
+        subIntent.putExtra("sub_todo", edSubTitle.getText().toString());
+        PendingIntent subAlarmIntent = PendingIntent.getBroadcast(AddSubTaskActivity.this, 0, subIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        AlarmManager subalarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+        AlarmManager subAlarm = (AlarmManager) getSystemService(ALARM_SERVICE);
 
         // Create time.
         Calendar startTime = Calendar.getInstance();
@@ -271,8 +272,8 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
         long alarmStartTime = startTime.getTimeInMillis();
-        if (subalarm != null) {
-            subalarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, subalarmIntent);
+        if (subAlarm != null) {
+            subAlarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, subAlarmIntent);
         }
 
     }
@@ -290,24 +291,24 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
 
-    protected void onActivityResult(int requestcode, int resultcode,
-                                    Intent imagereturnintent) {
-       super.onActivityResult(requestcode, resultcode, imagereturnintent);
-        if (requestcode == select_photo) {
-            if (resultcode == RESULT_OK) {
+    protected void onActivityResult(int requestCode, int resultCode,
+                                    Intent imageReturnIntent) {
+       super.onActivityResult(requestCode, resultCode, imageReturnIntent);
+        if (requestCode == select_photo) {
+            if (resultCode == RESULT_OK) {
                 try {
 
-                    Uri imageuri = imagereturnintent.getData();// Get intent
+                    Uri imageUri = imageReturnIntent.getData();// Get intent
                     // data
 
 
                     // Get real path and show over text view
                     String real_Path = getRealPathFromUri(AddSubTaskActivity.this,
-                            imageuri);
+                            imageUri);
                     tvSubImage.setText(real_Path);
 
 
-                    Bitmap bitmap = decodeUri(AddSubTaskActivity.this, imageuri, 300);// call
+                    Bitmap bitmap = decodeUri(AddSubTaskActivity.this, imageUri, 300);// call
                     // deocde
                     // uri
                     // method

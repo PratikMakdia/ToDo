@@ -29,11 +29,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     private TextView tvLoginMessage;
     private ProgressDialog pbDialog;
-    FirebaseAuth firebaseAuth;
-
+    private FirebaseAuth firebaseAuth;
     private EditText edEmail, edPassword;
     private Button btnLogin;
     private String mEmail, mPassword;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,22 +42,22 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         initialize();
-        clickableTextView();
+        manageOnClickOfSignUp();
         setOnClickListener();
     }
 
 
     /**
-     * for Clickable Sigin TextView
+     * for Clickable Sign in TextView
      */
-    private void clickableTextView() {
+    private void manageOnClickOfSignUp() {
         String mSignInText = getString(R.string.dont_account_message);
         SpannableString ss = new SpannableString(mSignInText);
         ClickableSpan clickableSpanLogin = new ClickableSpan() {
             @Override
             public void onClick(@NonNull View widget) {
                 Intent i = new Intent(getApplicationContext(), RegisterActivity.class);
-                startActivityForResult(i, 1);
+                startActivity(i);
             }
 
             @Override
@@ -120,13 +120,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             firebaseAuth.signInWithEmailAndPassword(mEmail, mPassword).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
+
+                    if (!isFinishing())
+                        pbDialog.dismiss();
                     if (task.isSuccessful()) {
                         navigateToMainScreen();
 
                     } else {
-                        pbDialog.dismiss();
-                        Toast.makeText(getApplicationContext(), R.string.email_not_registered, Toast.LENGTH_SHORT).show();
 
+                        Toast.makeText(getApplicationContext(), R.string.email_not_registered, Toast.LENGTH_SHORT).show();
                     }
                 }
             });
@@ -134,15 +136,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
-
-    /*private boolean isValidEmail(String memail) {
-
-
-        String EMAIL_PATTERN = "^[_A-Za-z0-9-+]+(\\.[_A-Za-z0-9-]+)*@" + "[A-Za-z0-9-]+(\\.[A-Za-z0-9]+)*(\\.[A-Za-z]{2,})$";
-        Pattern pattern = Pattern.compile(EMAIL_PATTERN);
-        Matcher matcher = pattern.matcher(memail);
-        return matcher.matches();
-    }*/
 
     /**
      * For Email Validation Function
@@ -175,11 +168,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             Toast.makeText(getApplicationContext(), R.string.enter_email_password, Toast.LENGTH_SHORT).show();
             return false;
+        } else if (TextUtils.isEmpty(mEmail)) {
+            Toast.makeText(getApplicationContext(), R.string.enter_email, Toast.LENGTH_SHORT).show();
+            return false;
         } else if (!isValidEmail(mEmail)) {
             Toast.makeText(getApplicationContext(), R.string.proper_email, Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (TextUtils.isEmpty(mEmail)) {
-   Toast.makeText(getApplicationContext(), R.string.enter_email, Toast.LENGTH_SHORT).show();
             return false;
         } else if (TextUtils.isEmpty(mPassword)) {
             Toast.makeText(getApplicationContext(), R.string.enter_password, Toast.LENGTH_SHORT).show();
@@ -193,9 +186,4 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        finish();
-    }
 }

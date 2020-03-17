@@ -3,179 +3,135 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    android:orientation="vertical">
 
 
+    <TextView
+        android:id="@+id/y_task"
+        style="@style/myTaskTvSize"
+        android:fontFamily="@style/FontOpenSans" />
 
-        <TextView
-            android:id="@+id/y_task"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="30dp"
-            android:fontFamily="@style/FontOpenSans"
-            android:text="@string/my_tasks"
-            android:textColor="@color/white"
-            android:textSize="@dimen/textSize"
-            android:textStyle="bold"
+    <LinearLayout
+        android:id="@+id/llMainTask"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/task_border"
+        android:fontFamily="@style/FontOpenSans"
+        android:orientation="vertical">
 
-            />
 
-        <LinearLayout
-            android:id="@+id/llMainTask"
+        <EditText
+            android:id="@+id/edMainTask"
+            style="@style/textViewMainTaskShow"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:background="@drawable/task_border"
             android:fontFamily="@style/FontOpenSans"
-            android:orientation="vertical">
+            android:hint="@string/main_task"
+            />
 
+        <EditText
+            android:id="@+id/edDetails"
+            style="@style/textViewTaskShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_add_details"
+            android:fontFamily="@style/FontOpenSans"
+            android:hint="@string/add_details" />
 
+        <EditText
+            android:id="@+id/edDateTime"
+            style="@style/textViewTaskShow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_date_time"
+            android:focusable="false"
+            android:fontFamily="@style/FontOpenSans"
+            android:hint="@string/add_Date_time" />
 
+        <RelativeLayout
+            android:id="@+id/rlImageLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-            <EditText
-                android:id="@+id/edMainTask"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvPath"
+                style="@style/textViewTaskShow"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:layout_marginTop="20dp"
+                android:drawableStart="@drawable/ic_add_image"
                 android:fontFamily="@style/FontOpenSans"
-                android:hint="@string/main_task"
-                android:padding="@dimen/paddingTextBox"
+                android:hint="@string/add_image" />
+
+            <ImageView
+                android:id="@+id/ivShowImage"
+                android:layout_width="50dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="20dp" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/llShowSubTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+
+            <ImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="45dp"
+                android:src="@drawable/ic_subdirectory_arrow_right_black_24dp" />
+
+
+            <TextView
+                android:id="@+id/tvAddSubTasks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="@dimen/Padding"
+                android:text="@string/addSubTasks"
                 android:textColor="@color/black"
-                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvShowSubTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:padding="@dimen/Padding"
+                android:textColor="@color/black"
                 android:textStyle="bold"
-                android:inputType="" />
-
-            <EditText
-                android:id="@+id/edDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:drawableStart="@drawable/ic_add_details"
-                android:drawablePadding="15dp"
-                android:fontFamily="@style/FontOpenSans"
-                android:hint="@string/add_details"
-                android:importantForAutofill="no"
-                android:padding="@dimen/paddingTextBox"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
-
-            <EditText
-                android:id="@+id/edDateTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="25dp"
-                android:drawableStart="@drawable/ic_date_time"
-                android:drawablePadding="15dp"
-                android:focusable="false"
-                android:fontFamily="@style/FontOpenSans"
-                android:hint="@string/add_Date_time"
-                android:importantForAutofill="no"
-                android:inputType=""
-                android:padding="@dimen/paddingTextBox"
-                android:clickable="true"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                tools:ignore="TextFields" />
-
-            <RelativeLayout
-                android:id="@+id/rlImageLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/tvPath"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:layout_marginStart="25dp"
-                    android:drawableStart="@drawable/ic_add_image"
-                    android:drawablePadding="15dp"
-                    android:fontFamily="@style/FontOpenSans"
-                    android:hint="@string/add_image"
-                    android:padding="@dimen/paddingTextBox"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
-
-                <ImageView
-                    android:id="@+id/ivShowImage"
-                    android:layout_width="50dp"
-                    android:layout_height="55dp"
-                    android:layout_alignParentEnd="true" />
-            </RelativeLayout>
-
-            <LinearLayout
-                android:id="@+id/llShowSubTask"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <ImageView
-                    android:id="@+id/ivArrow"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="45dp"
-
-                    android:src="@drawable/ic_subdirectory_arrow_right_black_24dp" />
-
-
-                <TextView
-                    android:id="@+id/tvAddSubTasks"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:padding="8dp"
-                    android:text="@string/addSubTasks"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvShowSubTask"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:padding="8dp"
-
-                    android:textColor="@color/black"
-                    android:textStyle="bold"
-                    android:visibility="gone" />
-
-
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnMainTaskAdd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="130dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/button_done"
-                android:text="@string/done"
-                android:textColor="@color/orange" />
-
-
-            <Button
-                android:id="@+id/btnMainTaskUpdate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="130dp"
-                android:layout_marginEnd="130dp"
-                android:layout_marginBottom="30dp"
-                android:background="@drawable/button_done"
-                android:text="@string/update"
-                android:textColor="@color/orange"
                 android:visibility="gone" />
 
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnMainTaskAdd"
+            style="@style/taskDoneButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_done"
+            android:text="@string/done"
+             />
 
+
+        <Button
+            android:id="@+id/btnMainTaskUpdate"
+            style="@style/taskUpdateButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_done"
+            android:text="@string/update"
+            android:textColor="@color/orange"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

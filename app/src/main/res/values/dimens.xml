@@ -8,5 +8,8 @@
     <dimen name="text_padding">0dp</dimen>
     <dimen name="paddingTextBox">18sp</dimen>
 
-    <dimen name="textSize">18sp</dimen>
+    <dimen name="textSize">20sp</dimen>
+    <dimen name="margin30">30sp</dimen>
+    <dimen name="margin25">25dp</dimen>
+    <dimen name="Padding">10dp</dimen>
 </resources>

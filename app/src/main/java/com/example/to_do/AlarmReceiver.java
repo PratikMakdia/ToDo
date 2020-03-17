@@ -58,10 +58,16 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Notify
         if (myNotificationManager != null) {
             myNotificationManager.notify(notificationId, builder.build());
+            int GenerateNotificationId= intent.getIntExtra("GenerateNotificationId",notificationId);
         }
+    }
 
 
+    public static void cancelNotification(Context ctx, int notifyId) {
 
-
+        NotificationManager nMgr = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (nMgr != null) {
+            nMgr.cancel(notifyId);
+        }
     }
 }
