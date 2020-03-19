@@ -1,4 +1,4 @@
-package com.example.to_do.Database;
+package com.example.to_do.model;
 
 import android.content.Context;
 import android.content.Intent;
@@ -14,9 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.example.to_do.AddMainTaskActivity;
+import com.example.to_do.AddSubTaskActivity;
 import com.example.to_do.R;
-import com.example.to_do.model.SubTask;
 
 import java.util.List;
 
@@ -26,12 +25,14 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
     private List<SubTask> mSubTaskes;
     private Context mSubContext;
     private LayoutInflater subLayoutInflater;
+    private OnDeleteClickListener onDeleteClickListener;
 
 
 
-    public SubTaskListAdapter(Context context) {
+    public SubTaskListAdapter(Context context,OnDeleteClickListener subListener) {
         subLayoutInflater = LayoutInflater.from(context);
         mSubContext = subLayoutInflater.getContext();
+        this.onDeleteClickListener = subListener;
 
     }
 
@@ -55,7 +56,8 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
             subViewHolder.imgEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mSubContext, AddMainTaskActivity.class);
+
+                    Intent intent = new Intent(mSubContext, AddSubTaskActivity.class);
                     intent.putExtra("noteId", mSubTaskes.get(subPosition).getId());
                     mSubContext.startActivity(intent);
                 }
@@ -64,9 +66,9 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
             subViewHolder.imgDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   /* if (onDeleteClickListener != null) {
+                    if (onDeleteClickListener != null) {
                         onDeleteClickListener.onDeleteClickListener(mSubTaskes.get(subPosition));
-                    }*/
+                    }
                 }
             });
         }
@@ -86,14 +88,11 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
         mSubTaskes = subTasks;
         notifyDataSetChanged();
     }
-
-
     public interface OnDeleteClickListener {
-        void onDeleteClickListener(SubTask subTask);
+        void onDeleteClickListener(SubTask submyTask);
 
 
     }
-
 
     public static class SubViewHolder extends ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
@@ -105,11 +104,9 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
         private SubViewHolder(@NonNull View itemView) {
             super(itemView);
 
-
             chkSubTask = itemView.findViewById(R.id.chkSubTask);
             imgDelete = itemView.findViewById(R.id.ivSubRowDelete);
             imgEdit = itemView.findViewById(R.id.ivSubRowEdit);
-
 
         }
 
@@ -126,6 +123,7 @@ public class SubTaskListAdapter extends RecyclerView.Adapter<SubTaskListAdapter.
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 chkSubTask.setPaintFlags(chkSubTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
 
             } else {
                 chkSubTask.setPaintFlags(0);

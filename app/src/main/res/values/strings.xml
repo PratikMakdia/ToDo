@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">To_Do</string>
+    <string name="app_name">ToDo</string>
     <string name="sing_up">Sign up</string>
     <string name="enter_email"> Enter E-Mail</string>
     <string name="login">Login</string>
@@ -59,6 +59,7 @@
     <string name="dont_account_message">don\'t have an account? SIGN UP</string>
     <string name="already_account_message">already have an account? SIGN IN</string>
     <string name="please_wait_your_data_save_message">Please Wait, We are Registering Your Data on Server</string>
+    <string name="please_fill_main_task">Please Fill Main Task</string>
 
 
 </resources>

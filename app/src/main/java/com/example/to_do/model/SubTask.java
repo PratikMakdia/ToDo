@@ -2,44 +2,45 @@ package com.example.to_do.model;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.ForeignKey;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "subtask")/*,
+@Entity(tableName = "subtask",
         foreignKeys = @ForeignKey(entity = Task.class,
                 parentColumns = "id",
-                childColumns = "maintaskid",
-                onDelete = ForeignKey.CASCADE))*/
+                childColumns = "taskId",
+                onDelete = ForeignKey.CASCADE))
 public class SubTask {
 
     @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = "sub_id")
+    @ColumnInfo(name = "subID")
     private int id;
 
-    @ColumnInfo(name = "sub_name")
+    @ColumnInfo(name = "subName")
     private String sub_name;
 
-    @ColumnInfo(name = "sub_Description")
+    @ColumnInfo(name = "subDetails")
     private String sub_description;
 
-    @ColumnInfo(name = "sub_Date_Time")
+    @ColumnInfo(name = "subDateTime")
     private String sub_date_time;
 
 
-    @ColumnInfo(name = "sub_img_path")
+    @ColumnInfo(name = "subImagePath")
     private String sub_img_path;
 
-    @ColumnInfo(name = "maintaskid")
-    private int maintask_id;
+    @ColumnInfo(name = "taskId")
+    private int mainTaskId;
 
 
-    public SubTask(int id, String sub_name, String sub_description, String sub_date_time, String sub_img_path, int maintask_id) {
+    public SubTask(int id, String sub_name, String sub_description, String sub_date_time, String sub_img_path, int mainTaskId) {
         this.id = id;
         this.sub_name = sub_name;
         this.sub_description = sub_description;
         this.sub_date_time = sub_date_time;
         this.sub_img_path = sub_img_path;
-        this.maintask_id = maintask_id;
+        this.mainTaskId = mainTaskId;
     }
 
     @Ignore
@@ -84,12 +85,18 @@ public class SubTask {
         this.sub_date_time = sub_date_time;
     }
 
-    public int getMaintask_id() {
-        return maintask_id;
+    public int getMainTaskId() {
+        return mainTaskId;
     }
 
-    public void setMaintask_id(int maintask_id) {
-        this.maintask_id = maintask_id;
+    public void setMainTaskId(int mainTaskId) {
+        this.mainTaskId = mainTaskId;
+    }
+
+    @Ignore
+    public SubTask(String sub_name, int mainTaskId) {
+        this.sub_name = sub_name;
+        this.mainTaskId = mainTaskId;
     }
 
     @Ignore
@@ -113,6 +120,29 @@ public class SubTask {
     }
 
     @Ignore
+    public SubTask(int id, String sub_name, int mainTaskId) {
+        this.id = id;
+        this.sub_name = sub_name;
+        this.mainTaskId = mainTaskId;
+    }
+
+    @Ignore
+    public SubTask(int id, String sub_name, String sub_description, int mainTaskId) {
+        this.id = id;
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.mainTaskId = mainTaskId;
+    }
+
+    @Ignore
+    public SubTask(String sub_name, String sub_description, String sub_date_time, int mainTaskId) {
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.sub_date_time = sub_date_time;
+        this.mainTaskId = mainTaskId;
+    }
+
+    @Ignore
     public SubTask(int id, String sub_name, String sub_description) {
         this.id = id;
         this.sub_name = sub_name;
@@ -127,7 +157,15 @@ public class SubTask {
         this.sub_img_path = sub_img_path;
     }
 
-   /* @Ignore
+    @Ignore
+    public SubTask(String sub_name, String sub_description, String sub_date_time, String sub_img_path, int mainTaskId) {
+        this.sub_name = sub_name;
+        this.sub_description = sub_description;
+        this.sub_date_time = sub_date_time;
+        this.sub_img_path = sub_img_path;
+        this.mainTaskId = mainTaskId;
+    }
+/* @Ignore
     public SubTask(String sub_name, String sub_description, String sub_date_time, int maintask_id) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
@@ -135,11 +173,14 @@ public class SubTask {
         this.maintask_id = maintask_id;
     }*/
 
-    @Ignore
-    public SubTask(String sub_name, String sub_description) {
+   @Ignore
+    public SubTask(String sub_name, String sub_description, int mainTaskId) {
         this.sub_name = sub_name;
         this.sub_description = sub_description;
+        this.mainTaskId = mainTaskId;
     }
+
+
 
     @Ignore
     public SubTask(int id, String sub_name) {

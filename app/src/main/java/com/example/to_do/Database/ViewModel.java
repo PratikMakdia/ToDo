@@ -18,7 +18,7 @@ public class ViewModel extends AndroidViewModel {
     private String TAG = this.getClass().getSimpleName();
     private TaskDao taskDao;
     private SubTaskDao subTaskDao;
-    private LiveData<List<SubTask>> mAllSubnotes;
+
     private LiveData<List<Task>> mAllNotes;
     private LiveData<List<Task>> mAllNotesByDate;
 
@@ -31,7 +31,7 @@ public class ViewModel extends AndroidViewModel {
         mAllNotes = taskDao.getAllNotes();
         mAllNotesByDate = taskDao.getAllNotesByDate();
 
-        mAllSubnotes =subTaskDao.getAllSubNotes();
+
     }
 
     public void insert(Task task) {
@@ -43,9 +43,7 @@ public class ViewModel extends AndroidViewModel {
         return mAllNotes;
     }
 
-    public LiveData<List<SubTask>> getAllSubNotes() {
-        return mAllSubnotes;
-    }
+
 
 
 
@@ -55,11 +53,12 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void delete(Task task)
+
     {
         new DeleteAsyncTask(taskDao).execute(task);
     }
 
-    public LiveData<List<Task>> getmAllNotesByDate() {
+    public LiveData<List<Task>> getAllNotesByDate() {
 
         return mAllNotesByDate;
     }
@@ -76,18 +75,18 @@ public class ViewModel extends AndroidViewModel {
     }
 
 
-    public LiveData<SubTask> getsubNote(int noteId) {
+    public LiveData<SubTask> getSubNote(int noteId) {
 
         return subTaskDao.getSubNote(noteId);
     }
 
 
+
     public LiveData<Task> mainTaskId(String taskName) {
         return taskDao.GetId(taskName);
     }
-
     @SuppressLint("StaticFieldLeak")
-    private class InsertAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class InsertAsyncTask extends AsyncTask<Task, Void, Void> {
 
         TaskDao mTaskDao;
 
@@ -104,7 +103,7 @@ public class ViewModel extends AndroidViewModel {
 
 
     @SuppressLint("StaticFieldLeak")
-    private class UpdateAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class UpdateAsyncTask extends AsyncTask<Task, Void, Void> {
         TaskDao mTaskDao;
 
         UpdateAsyncTask(TaskDao mTaskDao) {
@@ -120,7 +119,7 @@ public class ViewModel extends AndroidViewModel {
 
 
     @SuppressLint("StaticFieldLeak")
-    private class DeleteAsyncTask extends AsyncTask<Task, Void, Void> {
+    private static class DeleteAsyncTask extends AsyncTask<Task, Void, Void> {
         TaskDao mTaskDao;
 
         DeleteAsyncTask(TaskDao mTaskDao) {

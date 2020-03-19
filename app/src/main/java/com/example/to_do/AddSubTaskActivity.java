@@ -35,6 +35,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.example.to_do.model.SubTask;
 import com.example.to_do.Database.SubTaskViewModel;
 import com.example.to_do.Database.ViewModel;
+import com.example.to_do.model.Task;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
@@ -49,7 +50,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
     private TextView tvSubImage;
     private ImageView ivSubImage;
     private int select_photo = 1;
-    private int noteId;
+    private int noteId,getMainTaskID;
 
 
 
@@ -68,7 +69,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
      */
     private void initialize() {
         subTaskViewModel = new SubTaskViewModel((Application) getApplicationContext());
-        edSubTitle = findViewById(R.id.tvShowSubTask);
+        edSubTitle = findViewById(R.id.tvShowSubTitle);
         edSubDesc = findViewById(R.id.tvSubTaskDetails);
         edSubDateTime = findViewById(R.id.tvSubTaskDateTime);
         btnSubAdd = findViewById(R.id.btnSubAdd);
@@ -79,12 +80,19 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         Bundle bundle = getIntent().getExtras();
 
         if (bundle != null) {
-            noteId = bundle.getInt("note_id");
+            noteId = bundle.getInt("noteId");
+
+        }
+        Bundle getID= getIntent().getExtras();
+        if(getID!=null) {
+            getMainTaskID = getID.getInt("mainTaskID");
 
         }
 
+
         ViewModel viewModel = ViewModelProviders.of(this).get(ViewModel.class);
-        LiveData<SubTask> note = viewModel.getsubNote(noteId);
+
+        LiveData<SubTask> note = viewModel.getSubNote(noteId);
         note.observe(this, new Observer<SubTask>() {
             @Override
             public void onChanged(@Nullable SubTask subTask) {
@@ -102,6 +110,11 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
             }
         });
 
+       /* Bundle getID= getIntent().getExtras();
+        if(getID!=null) {
+            getMainTaskID = getID.getInt("mainTaskID");
+
+        }*/
 
     }
 
@@ -154,15 +167,15 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
             subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime,mUpdatePath);
-            if (TextUtils.isEmpty(mUpdateDesc) || TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
-                subtask = new SubTask(noteId, mUpdateTitle);
+            if (TextUtils.isEmpty(mUpdateDesc) && TextUtils.isEmpty(mUpdateDateTime) && TextUtils.isEmpty(mUpdatePath)) {
+                subtask = new SubTask(noteId, mUpdateTitle,getMainTaskID);
                 subTaskViewModel.update(subtask);
 
-            } else if (TextUtils.isEmpty(mUpdateDateTime) || TextUtils.isEmpty(mUpdatePath)) {
-                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc);
+            } else if (TextUtils.isEmpty(mUpdateDateTime) && TextUtils.isEmpty(mUpdatePath)) {
+                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc,getMainTaskID);
                 subTaskViewModel.update(subtask);
             } else {
-                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime, mUpdatePath);
+                subtask = new SubTask(noteId, mUpdateTitle, mUpdateDesc, mUpdateDateTime, mUpdatePath,getMainTaskID);
                 subTaskViewModel.update(subtask);
             }
 
@@ -183,41 +196,44 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
 
 
     private void addSubTaskDataintoRoomDatabase() {
-        Intent resultintent = new Intent();
-        if (TextUtils.isEmpty(edSubTitle.getText()) || TextUtils.isEmpty(edSubDesc.getText()) || TextUtils.isEmpty(edSubDateTime.getText())) {
-            setResult(RESULT_CANCELED, resultintent);
+
+
+        Intent subResultIntent = new Intent();
+        if (TextUtils.isEmpty(edSubTitle.getText())) {
+            setResult(RESULT_CANCELED, subResultIntent);
         } else {
 
             SubTask subTask;
 
-            String mnote = edSubTitle.getText().toString();
-            String mdesc = edSubDesc.getText().toString();
-            String mtime = edSubDateTime.getText().toString();
-            String msubpath= tvSubImage.getText().toString();
+
+            String mSubNote = edSubTitle.getText().toString();
+            String mSubDesc = edSubDesc.getText().toString();
+            String mSubTime = edSubDateTime.getText().toString();
+            String mSubPath= tvSubImage.getText().toString();
 
 
-
-            if (TextUtils.isEmpty(mdesc) && TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath)) {
-                subTask = new SubTask(mnote);
+            setResult(RESULT_OK, subResultIntent);
+            if (TextUtils.isEmpty(mSubDesc) && TextUtils.isEmpty(mSubTime)&&TextUtils.isEmpty(mSubPath)) {
+                subTask = new SubTask(mSubNote,getMainTaskID);
                 subTaskViewModel.insert(subTask);
             }
-            else if(TextUtils.isEmpty(mtime)||TextUtils.isEmpty(msubpath))
+            else if(TextUtils.isEmpty(mSubTime)&&TextUtils.isEmpty(mSubPath))
             {
-                subTask = new SubTask(mnote,mdesc);
+                subTask = new SubTask(mSubNote,mSubDesc,getMainTaskID);
                 subTaskViewModel.insert(subTask);
             }
-            else if( TextUtils.isEmpty(msubpath))
+            else if( TextUtils.isEmpty(mSubPath))
 
             {
-                subTask = new SubTask(mnote, mdesc,mtime);
+                subTask = new SubTask(mSubNote, mSubDesc,mSubTime,getMainTaskID);
                 subTaskViewModel.insert(subTask);
             }
             else {
-                subTask = new SubTask(mnote, mdesc, mtime,msubpath);
+                subTask = new SubTask(mSubNote, mSubDesc, mSubTime,mSubPath,getMainTaskID);
                 subTaskViewModel.insert(subTask);
             }
 
-            setResult(RESULT_OK, resultintent);
+
             Intent i = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(i);
 
@@ -258,7 +274,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         edSubDateTime.setText(edSubDateTime.getText() + " -" + hourOfDay + ":" + minute);
 
         Intent subIntent = new Intent(AddSubTaskActivity.this, SubTaskNotificationReciever.class);
-        subIntent.putExtra("sub_notificationId", getUniqueNotificationId());
+        subIntent.putExtra("sub_notificationId", getSubTaskUniqueNotificationId());
         subIntent.putExtra("sub_todo", edSubTitle.getText().toString());
         PendingIntent subAlarmIntent = PendingIntent.getBroadcast(AddSubTaskActivity.this, 0, subIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -277,7 +293,7 @@ public class AddSubTaskActivity extends AppCompatActivity implements View.OnClic
         }
 
     }
-    public int getUniqueNotificationId() {
+    public int getSubTaskUniqueNotificationId() {
         int notificationId;
         try {
             notificationId = (int) ((new Date().getTime() / 1000L) % Integer.MAX_VALUE);

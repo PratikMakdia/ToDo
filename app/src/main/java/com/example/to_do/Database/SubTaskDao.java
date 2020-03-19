@@ -27,30 +27,12 @@ public interface SubTaskDao {
     @Query("SELECT * FROM SubTask")
     LiveData<List<SubTask>> getAllSubNotes();
 
-    @Query("SELECT * FROM SubTask WHERE sub_id=:noteId")
+    @Query("SELECT * FROM SubTask WHERE subId=:noteId")
     LiveData<SubTask> getSubNote(int noteId);
 
 
+    @Query("SELECT * from subtask INNER JOIN tasks ON id=SubTask.taskId")
+    LiveData<List<SubTask>> getForeignKeyId();
 
-
-
-
-
-
-
-
-/*
-    void insert(Task task);
-
-    @Query("SELECT * FROM tasks")
-    LiveData<List<Task>> getAllNotes();
-
-    @Query("SELECT * FROM tasks WHERE id=:noteId")
-    LiveData<Task> getNote(int noteId);
-
-    @Update
-    void update(Task task);
-    @Delete
-    int delete(Task task);*/
 }
 

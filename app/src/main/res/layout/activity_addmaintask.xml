@@ -87,7 +87,13 @@
                 android:layout_marginStart="45dp"
                 android:src="@drawable/ic_subdirectory_arrow_right_black_24dp" />
 
-
+            <ImageView
+                android:id="@+id/ivAddSubTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:padding="5sp"
+                android:src="@drawable/ic_add_circle_black_24dp" />
             <TextView
                 android:id="@+id/tvAddSubTasks"
                 android:layout_width="wrap_content"
@@ -98,7 +104,14 @@
                 android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <TextView
+            <androidx.recyclerview.widget.RecyclerView
+                android:visibility="gone"
+       android:id="@+id/rvSubRecyclerView"
+       android:layout_width="wrap_content"
+       android:layout_height="100dp" />
+
+
+           <!-- <TextView
                 android:id="@+id/tvShowSubTask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +119,7 @@
                 android:padding="@dimen/Padding"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:visibility="gone" />
+                android:visibility="gone" />-->
 
 
         </LinearLayout>
@@ -117,6 +130,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_done"
+            android:layout_alignParentBottom="true"
             android:text="@string/done"
              />
 
@@ -129,6 +143,7 @@
             android:background="@drawable/button_done"
             android:text="@string/update"
             android:textColor="@color/orange"
+            android:layout_alignParentBottom="true"
             android:visibility="gone" />
 
     </LinearLayout>

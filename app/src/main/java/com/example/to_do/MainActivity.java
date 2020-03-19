@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
@@ -21,12 +23,12 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.Database.SubTaskListAdapter;
 import com.example.to_do.Database.SubTaskViewModel;
 import com.example.to_do.Database.ViewModel;
-import com.example.to_do.model.SubTask;
+import com.example.to_do.model.SubTaskListAdapter;
 import com.example.to_do.model.Task;
 import com.example.to_do.model.TaskListAdapter;
+import com.example.to_do.model.TaskListAdapter.OnDeleteClickListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -34,7 +36,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, TaskListAdapter.OnDeleteClickListener, PopupMenu.OnMenuItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnDeleteClickListener, PopupMenu.OnMenuItemClickListener {
 
 
 
@@ -49,7 +51,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AlarmReceiver mAlarmReceiver;
     private  RecyclerView rvShowSubTask;
     private SubTaskListAdapter subTaskListAdapter;
-
+    private  int STORAGE_PERMISSION_CODE=1;
+    private CardView cvSubTaskShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +78,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         ivMenuOrder =findViewById(R.id.ivMenuSortOrder);
         rvShowMainTask = findViewById(R.id.rvShowTasks);
-        rvShowSubTask = findViewById(R.id.rvSubRecyclerView);
+//
+//        cvSubTaskShow=findViewById(R.id.cvSubTask);
 
+//        rvShowSubTask=findViewById(R.id.rvSubRecyclerView);
+       // rvShowSubTask = findViewById(R.id.rvSubTasksShow);
 
         taskListAdapter = new TaskListAdapter(this, this);
         rvShowMainTask.setAdapter(taskListAdapter);
         rvShowMainTask.setLayoutManager(new LinearLayoutManager(this));
 
-       subTaskListAdapter = new SubTaskListAdapter(this);
-    /*   rvShowSubTask.setAdapter(subTaskListAdapter);
-        rvShowSubTask.setVisibility(View.VISIBLE);*/
-       /* rvShowSubTask.setAdapter(subTaskListAdapter);
+      /*  subTaskListAdapter = new SubTaskListAdapter(this);
+        rvShowSubTask.setAdapter(subTaskListAdapter);
         rvShowSubTask.setLayoutManager(new LinearLayoutManager(this));*/
+
+
 
 
         rvShowMainTask.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -110,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
 
-            getallnoteObserver();
+            getAllNoteObserver();
 
 
     }
@@ -118,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * for LiveData Observer  when MainActivity is launch
      */
-    private void getallnoteObserver() {
+    private void getAllNoteObserver() {
         viewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
 
@@ -128,19 +134,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onChanged(List<Task> tasks) {
 
                 taskListAdapter.setNotes(tasks);
-
             }
         });
-        subTaskViewModel=ViewModelProviders.of(this).get(SubTaskViewModel.class);
-        subTaskViewModel.getmAllsubNote().observe(this, new Observer<List<SubTask>>() {
+       /* subTaskViewModel=ViewModelProviders.of(this).get(SubTaskViewModel.class);
+        subTaskViewModel.getAllSubNote().observe(this, new Observer<List<SubTask>>() {
             @Override
             public void onChanged(List<SubTask> subTasks) {
 
                 subTaskListAdapter.setNotes(subTasks);
             }
         });
-
-
+*/
     }
 
 
@@ -222,7 +226,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * for Navigate to login Screen
      */
     private void navigateToLoginScreen() {
-        startActivity(new Intent(getBaseContext(), LoginActivity.class));
+        startActivity(new Intent(getApplicationContext(), LoginActivity.class));
         finish();
     }
 
@@ -286,7 +290,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Intent i = new Intent(MainActivity.this, AddMainTaskActivity.class);
             startActivity(i);
         }
-
+        else
+        {
+            requestStorgaePermission();
+        }
 
 
     }
@@ -310,7 +317,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void requestStorgaePermission() {
 
+        if(ActivityCompat.shouldShowRequestPermissionRationale(this,Manifest.permission.READ_EXTERNAL_STORAGE))
+        {
+
+        }
+        else
+        {
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+        }
+    }
 
 
     @Override
@@ -324,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         }*/
-        /*Intent mainIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
+      /*  Intent mainIntent = new Intent(getApplicationContext(), AlarmReceiver.class);
         int uniqueNotificationId = mainIntent.getIntExtra("GenerateNotificationId",0 );
         //  int uniqueNotificationId=AddMainTaskActivity.getUniqueNotificationId();
         AlarmReceiver.cancelNotification(getApplicationContext(),uniqueNotificationId);*/
@@ -398,12 +415,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.bydate:
 
 
-                viewModel.getmAllNotesByDate().observe(this, new Observer<List<Task>>() {
+                viewModel.getAllNotesByDate().observe(this, new Observer<List<Task>>() {
 
                     @Override
                     public void onChanged(List<Task> tasks) {
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
                         itemTouchHelper.attachToRecyclerView(rvShowMainTask);
+                        //cvSubTaskShow.setVisibility(View.GONE);
                         taskListAdapter.setNotes(tasks);
                     }
                 });
@@ -416,6 +434,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
                         itemTouchHelper.attachToRecyclerView(rvShowMainTask);
+                        //cvSubTaskShow.setVisibility(View.VISIBLE);
                         taskListAdapter.setNotes(tasks);
 
                     }

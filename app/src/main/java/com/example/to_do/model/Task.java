@@ -19,9 +19,13 @@ public class Task {
     private String description;
 
     @ColumnInfo(name = "Date")
-    private   String date;
+    private String date;
+
     @ColumnInfo(name = "img_path")
-    private String img_path;
+    private String imgPath;
+
+    @ColumnInfo(name = "notificationId")
+    private int notificationId;
 
 /*
     @ColumnInfo(name ="word_order")
@@ -29,14 +33,61 @@ public class Task {
 */
 
     @Ignore
-    public Task(int id, String name, String description, String date, String img_path) {
+    public Task(int id, String name, String description, String date, String imgPath, int notificationId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.date = date;
-        this.img_path = img_path;
+        this.imgPath = imgPath;
+        this.notificationId = notificationId;
     }
 
+    @Ignore
+    public Task(String name, String description, String date, String imgPath, int notificationId) {
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.imgPath = imgPath;
+        this.notificationId = notificationId;
+    }
+
+    @Ignore
+    public Task(int id, String name, String description, String date, String imgPath) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.imgPath = imgPath;
+    }
+
+    @Ignore
+    public Task(String name, String description, int notificationId) {
+        this.name = name;
+        this.description = description;
+        this.notificationId = notificationId;
+    }
+
+    @Ignore
+    public Task(String name, int notificationId) {
+        this.name = name;
+        this.notificationId = notificationId;
+    }
+
+    @Ignore
+    public Task(String name, String description, String date, int notificationId) {
+        this.name = name;
+        this.description = description;
+        this.date = date;
+        this.notificationId = notificationId;
+    }
+
+    public int getNotificationId() {
+        return notificationId;
+    }
+
+    public void setNotificationId(int notificationId) {
+        this.notificationId = notificationId;
+    }
 
 /*
 
@@ -66,6 +117,7 @@ public class Task {
         this.id = id;
         this.name = name;
     }
+
     @Ignore
     public Task(int id, String name, String description) {
         this.id = id;
@@ -87,6 +139,7 @@ public class Task {
 
 
     }
+
     @Ignore
     public Task(String name) {
         this.name = name;
@@ -133,18 +186,18 @@ public class Task {
     }*/
 
     @Ignore
-    public Task(String name, String description, String date, String img_path) {
+    public Task(String name, String description, String date, String imgPath) {
         this.name = name;
         this.description = description;
         this.date = date;
-        this.img_path = img_path;
+        this.imgPath = imgPath;
     }
 
-    public String getImg_path() {
-        return img_path;
+    public String getImgPath() {
+        return imgPath;
     }
 
-    public void setImg_path(String img_path) {
-        this.img_path = img_path;
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
     }
 }

@@ -14,9 +14,10 @@ import java.util.List;
 public class SubTaskViewModel extends AndroidViewModel {
 
     private static SubTaskDao subTaskDao;
-    private String TAG = this.getClass().getSimpleName();
+   // private String TAG = this.getClass().getSimpleName();
 
-    private LiveData<List<SubTask>> mAllsubNote;
+    private LiveData<List<SubTask>> mAllSubNote;
+    private LiveData<List<SubTask>> getForeignKey;
 
 
     public SubTaskViewModel(@NonNull Application application) {
@@ -24,39 +25,41 @@ public class SubTaskViewModel extends AndroidViewModel {
 
         TaskDatabase taskDB = TaskDatabase.getDatabase(application);
         subTaskDao = taskDB.subTaskDao();
-        mAllsubNote=subTaskDao.getAllSubNotes();
+        mAllSubNote = subTaskDao.getAllSubNotes();
+        getForeignKey=subTaskDao.getForeignKeyId();
 
     }
 
-    public LiveData<List<SubTask>> getmAllsubNote()
-    {
-        return mAllsubNote;
+    public LiveData<List<SubTask>> getAllSubNote() {
+        return mAllSubNote;
     }
 
-    public LiveData<SubTask> getsubNote(int noteId) {
+
+    public LiveData<List<SubTask>> GetForeignKeyId(){
+        return  getForeignKey;
+    }
+
+
+   /* public LiveData<SubTask> getSubNote(int noteId) {
 
         return subTaskDao.getSubNote(noteId);
     }
+*/
 
-
-
-    public void insert(SubTask subtasks) {
-        new InsertAsyncTask(subTaskDao).execute(subtasks);
+    public void insert(SubTask subTasks) {
+        new InsertAsyncTask(subTaskDao).execute(subTasks);
     }
 
-    public void update(SubTask subtasks) {
-        new UpdateAsyncTask(subTaskDao).execute(subtasks);
+    public void update(SubTask subTasks) {
+        new UpdateAsyncTask(subTaskDao).execute(subTasks);
 
     }
 
-    public void delete(SubTask subTasks)
-    {
+    public void delete(SubTask subTasks) {
         new DeleteAsyncTask(subTaskDao).execute(subTasks);
     }
 
-
-    private class InsertAsyncTask extends AsyncTask<SubTask, Void, Void> {
-
+    private static class InsertAsyncTask extends AsyncTask<SubTask, Void, Void> {
 
         SubTaskDao mSubTaskDao;
 
@@ -66,15 +69,15 @@ public class SubTaskViewModel extends AndroidViewModel {
         }
 
         @Override
-        protected Void doInBackground(SubTask... subtasks) {
-            mSubTaskDao.insert(subtasks[0]);
+        protected Void doInBackground(SubTask... subTasks) {
+            mSubTaskDao.insert(subTasks[0]);
             return null;
         }
 
 
     }
 
-    private class UpdateAsyncTask extends AsyncTask<SubTask, Void, Void> {
+    private static class UpdateAsyncTask extends AsyncTask<SubTask, Void, Void> {
         SubTaskDao mSubTaskDao;
 
         UpdateAsyncTask(SubTaskDao subTaskDao) {
@@ -82,15 +85,14 @@ public class SubTaskViewModel extends AndroidViewModel {
         }
 
         @Override
-        protected Void doInBackground(SubTask... subtasks) {
-            mSubTaskDao.update(subtasks[0]);
+        protected Void doInBackground(SubTask... subTasks) {
+            mSubTaskDao.update(subTasks[0]);
             return null;
         }
 
-
     }
 
-    private class DeleteAsyncTask extends AsyncTask<SubTask, Void, Void> {
+    private static class DeleteAsyncTask extends AsyncTask<SubTask, Void, Void> {
         SubTaskDao mSubTaskDao;
 
 

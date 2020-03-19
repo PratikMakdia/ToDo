@@ -32,27 +32,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.to_do.model.Task;
+import com.example.to_do.Database.SubTaskViewModel;
 import com.example.to_do.Database.ViewModel;
+import com.example.to_do.model.SubTask;
+import com.example.to_do.model.SubTaskListAdapter;
+import com.example.to_do.model.Task;
+import com.example.to_do.model.TaskListAdapter;
 
 import java.io.FileNotFoundException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Random;
 
-public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+import static android.app.DatePickerDialog.*;
+import static android.app.TimePickerDialog.*;
+import static com.example.to_do.model.SubTaskListAdapter.*;
 
-    private  int getId;
+public class AddMainTaskActivity extends AppCompatActivity implements View.OnClickListener, OnDateSetListener, OnTimeSetListener, OnDeleteClickListener {
+
+    private int getId;
     private EditText edAdd, edDesc, edDateTime;
     private TextView tvImage, tvShowSubTask, tvAddSubTask;
     private Button btnAdd, btnUpdate;
     private ViewModel viewModel;
     private int noteId;
-    private ImageView ivGalleryImage;
+    private SubTaskViewModel subTaskViewModel;
+    private ImageView ivGalleryImage, ivAddSubTaskLogo;
+    private SubTaskListAdapter subTaskListAdapter;
+    private RecyclerView rvShowSubTask;
     private int select_photo = 1;
-    private  static int day,month,year,hour,minute;
-    private int dayFinal,monthFinal,yearFinal,hourFinal,minuteFinal;
+    private static int day, month, year, hour, minute;
+    private int dayFinal, monthFinal, yearFinal, hourFinal, minuteFinal;
 
 
     @Override
@@ -86,7 +100,6 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count,
                                           int after) {
-
             }
 
             @Override
@@ -108,7 +121,8 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         tvAddSubTask = findViewById(R.id.tvAddSubTasks);
         btnUpdate = findViewById(R.id.btnMainTaskUpdate);
         ivGalleryImage = findViewById(R.id.ivShowImage);
-        tvShowSubTask = findViewById(R.id.tvShowSubTask);
+        rvShowSubTask = findViewById(R.id.rvSubRecyclerView);
+        ivAddSubTaskLogo = findViewById(R.id.ivAddSubTask);
 
 
         Bundle bundle = getIntent().getExtras();
@@ -124,28 +138,46 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
             public void onChanged(@Nullable Task task) {
 
                 if (task != null) {
-                   getId=task.getId();
                     edAdd.setText(task.getName());
                     edDesc.setText(task.getDescription());
                     edDateTime.setText(task.getDate());
-                    tvImage.setText(task.getImg_path());
-                    tvAddSubTask.setVisibility(View.VISIBLE);
+                    tvImage.setText(task.getImgPath());
+                    tvAddSubTask.setVisibility(View.GONE);
                     btnUpdate.setVisibility(View.VISIBLE);
                     btnAdd.setVisibility(View.GONE);
-//                    tvShowSubTask.setVisibility(View.VISIBLE);
-                    ivGalleryImage.setImageBitmap(BitmapFactory.decodeFile(task.getImg_path()));
-                    Drawable d = Drawable.createFromPath(task.getImg_path());
+                    rvShowSubTask.setVisibility(View.VISIBLE);
+                    ivAddSubTaskLogo.setVisibility(View.VISIBLE);
+                    ivGalleryImage.setImageBitmap(BitmapFactory.decodeFile(task.getImgPath()));
+                    Drawable d = Drawable.createFromPath(task.getImgPath());
                     ivGalleryImage.setImageDrawable(d);
                 }
             }
         });
 
+        subTaskListAdapter = new SubTaskListAdapter(this, this);
+        rvShowSubTask.setAdapter(subTaskListAdapter);
+        rvShowSubTask.setLayoutManager(new LinearLayoutManager(this));
 
+        subTaskViewModel = ViewModelProviders.of(this).get(SubTaskViewModel.class);
 
+        subTaskViewModel.GetForeignKeyId().observe(this, new Observer<List<SubTask>>() {
+            @Override
+            public void onChanged(List<SubTask> subTasks) {
+
+                subTaskListAdapter.setNotes(subTasks);
+            }
+        });
+
+        /*subTaskViewModel.getAllSubNote().observe(this, new Observer<List<SubTask>>() {
+            @Override
+            public void onChanged(List<SubTask> subTasks) {
+
+                subTaskListAdapter.setNotes(subTasks);
+            }
+        });*/
 
 
     }
-
 
 
     /**
@@ -158,6 +190,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         tvAddSubTask.setOnClickListener(this);
         btnUpdate.setOnClickListener(this);
         tvImage.setOnClickListener(this);
+        ivAddSubTaskLogo.setOnClickListener(this);
 
     }
 
@@ -166,10 +199,24 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
      * for Navigate to Sub Task Screen
      */
     private void navigateToSubTaskScreen() {
+        String mNote = edAdd.getText().toString();
+        LiveData<Task> note = viewModel.mainTaskId(mNote);
+        note.observe(this, new Observer<Task>() {
+            @Override
+            public void onChanged(@Nullable Task task) {
 
-        Intent i = new Intent(getApplicationContext(), AddSubTaskActivity.class);
+                if (task != null) {
+                    getId = task.getId();
 
-        startActivity(i);
+                    Intent idPass = new Intent(AddMainTaskActivity.this, AddSubTaskActivity.class);
+                    idPass.putExtra("mainTaskID", getId);
+                    startActivity(idPass);
+                    finish();
+
+                }
+            }
+        });
+
     }
 
     @Override
@@ -186,13 +233,15 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                 break;
             case R.id.tvAddSubTasks:
                 AddDataIntoRoomDatabase();
-                navigateToSubTaskScreen();
                 break;
             case R.id.btnMainTaskAdd:
-                AddDataIntoRoomDatabase();
+                AddDataIntoRoom();
                 break;
             case R.id.btnMainTaskUpdate:
                 updateDataIntoRomDatabase();
+                break;
+            case R.id.ivAddSubTask:
+                navigateToSubTaskScreen();
                 break;
         }
     }
@@ -241,6 +290,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
 
             setResult(RESULT_OK, result);
+            SetNotification();
             finish();
         }
 
@@ -248,7 +298,7 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
 
 
     /**
-     * for Add Main Task data in Room Database
+     * for Add Main Task data in Room Database And Navigate to Sub Task Screen
      */
     public void AddDataIntoRoomDatabase() {
 
@@ -258,83 +308,33 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
         } else {
             Task task;
 
-            final String mNote = edAdd.getText().toString();
+            String mNote = edAdd.getText().toString();
             String mDesc = edDesc.getText().toString();
             String mTime = edDateTime.getText().toString();
             String mPath = tvImage.getText().toString();
 
             setResult(RESULT_OK, resultIntent);
-            if (TextUtils.isEmpty(mDesc) || TextUtils.isEmpty(mTime) || TextUtils.isEmpty(mPath)) {
-                task = new Task(mNote);
+            if (TextUtils.isEmpty(mDesc) && TextUtils.isEmpty(mTime) && TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, getUniqueNotificationId());
                 viewModel.insert(task);
-                LiveData<Task> note = viewModel.mainTaskId(mNote);
-                note.observe(this, new Observer<Task>() {
-                    @Override
-                    public void onChanged(@Nullable Task task) {
-
-                        if (task != null) {
-                            getId=edAdd.getId();
-                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
+                navigateToSubTaskScreen();
 //
 
-            } else if (TextUtils.isEmpty(mTime) || TextUtils.isEmpty(mPath)) {
-                task = new Task(mNote, mDesc);
+            } else if (TextUtils.isEmpty(mTime) && TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, mDesc, getUniqueNotificationId());
                 viewModel.insert(task);
-                LiveData<Task> note = viewModel.mainTaskId(mNote);
-                note.observe(this, new Observer<Task>() {
-                    @Override
-                    public void onChanged(@Nullable Task task) {
-
-                        if (task != null) {
-                            getId=edAdd.getId();
-                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-//
-                //Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+                navigateToSubTaskScreen();
 
 
             } else if (TextUtils.isEmpty(mPath)) {
-                task = new Task(mNote, mDesc, mTime);
+                task = new Task(mNote, mDesc, mTime, getUniqueNotificationId());
                 viewModel.insert(task);
-                LiveData<Task> note = viewModel.mainTaskId(mNote);
-                note.observe(this, new Observer<Task>() {
-                    @Override
-                    public void onChanged(@Nullable Task task) {
-
-                        if (task != null) {
-                            getId=edAdd.getId();
-                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-//
-                //Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+                navigateToSubTaskScreen();
 
             } else {
-                task = new Task(mNote, mDesc, mTime, mPath);
+                task = new Task(mNote, mDesc, mTime, mPath, getUniqueNotificationId());
                 viewModel.insert(task);
-                LiveData<Task> note = viewModel.mainTaskId(mNote);
-                note.observe(this, new Observer<Task>() {
-                    @Override
-                    public void onChanged(@Nullable Task task) {
-
-                        if (task != null) {
-                            getId=edAdd.getId();
-                            Toast.makeText(getApplicationContext(),String.valueOf(getId),Toast.LENGTH_SHORT).show();
-
-                        }
-                    }
-                });
-//
-               // Toast.makeText(getApplicationContext(),viewModel.mainTaskId(mNote),Toast.LENGTH_SHORT).show();
+                navigateToSubTaskScreen();
 
             }
 
@@ -344,11 +344,51 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     }
 
 
+    public void AddDataIntoRoom() {
+
+
+        if (TextUtils.isEmpty(edAdd.getText())) {
+            Toast.makeText(getApplicationContext(), getString(R.string.please_fill_main_task), Toast.LENGTH_SHORT).show();
+        } else {
+            Task task;
+
+            String mNote = edAdd.getText().toString();
+            String mDesc = edDesc.getText().toString();
+            String mTime = edDateTime.getText().toString();
+            String mPath = tvImage.getText().toString();
+
+
+            if (TextUtils.isEmpty(mDesc) && TextUtils.isEmpty(mTime) && TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote);
+                viewModel.insert(task);
+
+            } else if (TextUtils.isEmpty(mTime) && TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, mDesc);
+                viewModel.insert(task);
+
+
+            } else if (TextUtils.isEmpty(mPath)) {
+                task = new Task(mNote, mDesc, mTime, getUniqueNotificationId());
+                viewModel.insert(task);
+                SetNotification();
+
+            } else {
+                task = new Task(mNote, mDesc, mTime, mPath, getUniqueNotificationId());
+                viewModel.insert(task);
+                SetNotification();
+            }
+
+        }
+
+
+       finish();
+    }
+
     private void showDateAndTimePicker() {
         Calendar calendar = Calendar.getInstance();
-         year = calendar.get(Calendar.YEAR);
-         month = calendar.get(Calendar.MONTH);
-         day = calendar.get(Calendar.DAY_OF_MONTH);
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
         DatePickerDialog datePickerDialog = new DatePickerDialog(AddMainTaskActivity.this, this, year, month, day);
         datePickerDialog.show();
     }
@@ -357,55 +397,54 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
 
-        yearFinal=year;
-        monthFinal=month+1;
-        dayFinal=dayOfMonth;
+        yearFinal = year;
+        monthFinal = month + 1;
+        dayFinal = dayOfMonth;
 
         Calendar calendar = Calendar.getInstance();
-         hour = calendar.get(Calendar.HOUR_OF_DAY);
-         minute = calendar.get(Calendar.MINUTE);
+        int hour = calendar.get(Calendar.HOUR_OF_DAY);
+        int minute = calendar.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog;
         timePickerDialog = new TimePickerDialog(AddMainTaskActivity.this, this, hour, minute, DateFormat.is24HourFormat(this));
-
+        edDateTime.setText(dayOfMonth + "/" + (month + 1) + "/" + year);
         timePickerDialog.show();
     }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        hourFinal=hourOfDay;
-        minuteFinal=minute;
 
-        edDateTime.setText(dayFinal + "/" + (monthFinal + 1) + "/" + yearFinal + " -" + hourFinal + ":" + minuteFinal);
+
+        hourFinal = hourOfDay;
+        minuteFinal = minute;
+        edDateTime.setText(edDateTime.getText() + " -" + hourOfDay + ":" + minute);
+
+    }
+
+    public void SetNotification() {
+
+            Intent intent = new Intent(AddMainTaskActivity.this, AlarmReceiver.class);
+            intent.putExtra("notificationId", getUniqueNotificationId());
+            intent.putExtra("todo", edAdd.getText().toString());
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(AddMainTaskActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
+
+            // Create time.
+            Calendar startTime = Calendar.getInstance();
+            startTime.set(Calendar.HOUR_OF_DAY, hourFinal);
+            startTime.set(Calendar.MINUTE, minuteFinal);
+            startTime.set(Calendar.SECOND, 0);
+
+
+            long alarmStartTime = startTime.getTimeInMillis();
+            if (alarm != null) {
+                alarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, alarmIntent);
+            }
 
 
     }
 
-    public void SetNotification()
-    {
-        Intent intent = new Intent(AddMainTaskActivity.this, AlarmReceiver.class);
-        intent.putExtra("notificationId", getUniqueNotificationId());
-        intent.putExtra("todo", edAdd.getText().toString());
-        PendingIntent alarmIntent = PendingIntent.getBroadcast(AddMainTaskActivity.this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        AlarmManager alarm = (AlarmManager) getSystemService(ALARM_SERVICE);
-
-        // Create time.
-        Calendar startTime = Calendar.getInstance();
-
-        startTime.set(Calendar.YEAR,yearFinal);
-        startTime.set(Calendar.MONTH,monthFinal);
-        startTime.set(Calendar.DAY_OF_MONTH,dayFinal);
-        startTime.set(Calendar.HOUR_OF_DAY, hourFinal);
-        startTime.set(Calendar.MINUTE, minuteFinal);
-
-
-
-        long alarmStartTime = startTime.getTimeInMillis();
-        if (alarm != null) {
-            alarm.set(AlarmManager.RTC_WAKEUP, alarmStartTime, alarmIntent);
-        }
-    }
     public static int getUniqueNotificationId() {
         int notificationId;
         try {
@@ -497,5 +536,11 @@ public class AddMainTaskActivity extends AppCompatActivity implements View.OnCli
                 cursor.close();
             }
         }
+    }
+
+
+    @Override
+    public void onDeleteClickListener(SubTask subTask) {
+        subTaskViewModel.delete(subTask);
     }
 }

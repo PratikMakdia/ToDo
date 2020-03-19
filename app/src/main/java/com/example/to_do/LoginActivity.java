@@ -86,9 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         edEmail = findViewById(R.id.edEmail);
         edPassword = findViewById(R.id.edPassword);
         btnLogin = findViewById(R.id.btnLogin);
-
         pbDialog = new ProgressDialog(LoginActivity.this);
-
     }
 
     /**

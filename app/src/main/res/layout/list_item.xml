@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainlinear"
+    android:id="@+id/llMain"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:focusable="true"
     android:orientation="vertical">
-
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvMainTask"
@@ -18,29 +17,13 @@
             android:id="@+id/rlMainTask"
             android:layout_width="wrap_content"
             android:layout_height="60dp"
-            android:gravity="center_vertical"
-            tools:ignore="ExtraText">
+            android:gravity="center_vertical">
 
             <CheckBox
                 android:id="@+id/chkMainTask"
                 style="@style/showTaskName"
-                android:layout_width="wrap_content"
-
-                android:layout_height="wrap_content"
-                android:text="Demo"
-                tools:ignore="HardcodedText" />
-
-               <TextView
-                   android:id="@+id/txvNote"
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:layout_margin="7dp"
-                   android:text="Note"
-                   android:textColor="@color/black"
-                   android:textSize="18sp"
-                   android:textStyle="bold"
-                   android:visibility="gone"/>
-
+                android:layout_width="275sp"
+                android:layout_height="wrap_content"/>
             <ImageView
                 android:id="@+id/ivRowEdit"
                 style="@style/showTaskName"
@@ -49,7 +32,6 @@
                 android:layout_margin="7dp"
                 android:layout_toLeftOf="@id/ivRowDelete"
                 android:contentDescription="TODO"
-
                 android:src="@drawable/ic_edit_black_24dp"
               />
             <ImageView
@@ -63,14 +45,10 @@
         </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvSubRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:listitem="@layout/sub_list"
-        />
-
+        android:layout_height="match_parent" />
 
 </LinearLayout>
 

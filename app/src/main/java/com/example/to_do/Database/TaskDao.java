@@ -23,21 +23,16 @@ public interface TaskDao {
     @Query("SELECT * FROM tasks WHERE id=:noteId")
     LiveData<Task> getNote(int noteId);
 
-  
 
-    @Query("SELECT id from tasks WHERE name=:taskName")
-    LiveData<Task>  GetId(String taskName);
+    @Query("SELECT * from tasks WHERE name=:taskName")
+    LiveData<Task> GetId(String taskName);
 
     @Delete
     int delete(Task task);
 
 
-
-
-
-
     @Query("SELECT * FROM tasks ORDER BY Date ASC")
-    LiveData <List<Task>> getAllNotesByDate();
+    LiveData<List<Task>> getAllNotesByDate();
 
 
     @Update

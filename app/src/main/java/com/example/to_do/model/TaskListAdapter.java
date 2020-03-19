@@ -9,15 +9,15 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.to_do.AddMainTaskActivity;
-import com.example.to_do.Database.SubTaskListAdapter;
+import com.example.to_do.AlarmReceiver;
 import com.example.to_do.R;
 
 import java.util.Collection;
@@ -34,13 +34,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     private OnDeleteClickListener onDeleteClickListener;
     private RecyclerView rvSubTAsk;
     private SubTaskListAdapter subTaskListAdapter;
-
+    int notificationId;
 
     public TaskListAdapter(Context context, OnDeleteClickListener listener) {
 //        rvSubTAsk.setVisibility(View.VISIBLE);
         layoutInflater = LayoutInflater.from(context);
         mcontext = context;
         this.onDeleteClickListener = listener;
+
+
     }
 
 
@@ -53,6 +55,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
 
     @Override
     public void onBindViewHolder(@NonNull final TaskViewHolder holder, final int position) {
+
+
         if (mTaskes != null) {
             Task task = mTaskes.get(position);
             holder.setData(task.getName(), position);
@@ -60,13 +64,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
                 @Override
                 public void onClick(View v) {
 
+                    /*holder.cvSubTasks.setVisibility(View.VISIBLE);*/
+                    holder.rvSubTAsk.setVisibility(View.VISIBLE);
 
                 }
             });
 
             holder.imgEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {  Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
+                public void onClick(View v) {
+                    Intent intent = new Intent(mcontext, AddMainTaskActivity.class);
                     intent.putExtra("note_id", mTaskes.get(position).getId());
                     mcontext.startActivity(intent);
 
@@ -77,18 +84,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             holder.imgDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
                     if (onDeleteClickListener != null) {
                         onDeleteClickListener.onDeleteClickListener(mTaskes.get(position));
+                        AlarmReceiver.cancelNotification(mcontext,mTaskes.get(position).getNotificationId());
+
                     }
                 }
             });
 
-        } else {
-            // Covers the case of data not being ready yet.
-            Toast.makeText(mcontext,R.string.no_note,Toast.LENGTH_SHORT).show();
         }
-
-
+        else
+        {
+            Toast.makeText(mcontext,"No Notes",Toast.LENGTH_SHORT).show();
+        }
 
     }
 
@@ -238,10 +247,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
     public static class TaskViewHolder extends RecyclerView.ViewHolder implements CompoundButton.OnCheckedChangeListener {
 
 
-        private TextView taskItemView;
-        private ImageView imgDelete,imgEdit;
+        private ImageView imgDelete, imgEdit;
         private int mPosition;
         private CheckBox chkMainTask;
+        private CardView cvSubTasks;
 
         private RecyclerView rvSubTAsk;
 
@@ -249,10 +258,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
             super(itemView);
 
             chkMainTask = itemView.findViewById(R.id.chkMainTask);
-            taskItemView = itemView.findViewById(R.id.txvNote);
-            imgEdit=itemView.findViewById(R.id.ivRowEdit);
+            imgEdit = itemView.findViewById(R.id.ivRowEdit);
             imgDelete = itemView.findViewById(R.id.ivRowDelete);
-            rvSubTAsk=itemView.findViewById(R.id.rvSubRecyclerView);
+            rvSubTAsk = itemView.findViewById(R.id.rvSubRecyclerView);
+            //cvSubTasks=itemView.findViewById(R.id.cvSubTask);
 
         }
 
@@ -264,12 +273,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         }
 
 
-
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
             if (isChecked) {
                 chkMainTask.setPaintFlags(chkMainTask.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
 
+                // AlarmReceiver.cancelNotification(context,AddMainTaskActivity.getUniqueNotificationId());
             } else {
                 chkMainTask.setPaintFlags(0);
 
@@ -277,11 +286,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskVi
         }
 
     }
-
-
-
-
-
 
 
 }
